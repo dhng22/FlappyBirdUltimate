@@ -208,7 +208,7 @@ public class GameThread implements Runnable {
         movingPower();
     }
     private void execPlayingBird() {
-        if (globalCount % 2000000 == 0) {
+        if (globalCount % 20000 == 0) {
             if (bird.getY() >= maxY || bird.getY() <= minY) {
                 bird.getHitRect(birdRect);
                 if (birdRect.intersect(baseRect) || bird.getY() <= 0) {
@@ -222,7 +222,7 @@ public class GameThread implements Runnable {
     }
 
     private void movingPipe() {
-        if (globalCount % 2000000 == 0){
+        if (globalCount % 20000 == 0){
             if (pipeList.size() > 0) {
                 for (int i = 0; i < pipeList.size(); i++) {
                     PipeObject[] pipePair = pipeList.get(i);
@@ -313,7 +313,7 @@ public class GameThread implements Runnable {
      * checking bird intersect with power
      */
     private void movingPower() {
-        if (globalCount % 2600000 == 0) {
+        if (globalCount % 26000 == 0) {
             if (powerList.size() > 0) {
                 SuperPowerObject superPowerObject = powerList.peek();
                 assert superPowerObject != null;
