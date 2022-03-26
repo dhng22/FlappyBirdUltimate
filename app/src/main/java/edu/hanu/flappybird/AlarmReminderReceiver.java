@@ -19,7 +19,7 @@ public class AlarmReminderReceiver extends BroadcastReceiver {
             Notification notificationCompat = new NotificationCompat
                     .Builder(context, MyApplication.channel_reminder)
                     .setContentTitle("PLAYING TIMEEEE!")
-                    .setContentText("Good morning, it's 7 a.m, play some game with music on might boost your mood :DD")
+                    .setContentText("Good morning, play some game with music on might boost your mood :DD")
                     .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.wojak))
                     .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(BitmapFactory.decodeResource(context.getResources(), R.drawable.wojak)).bigLargeIcon(null))
                     .setSmallIcon(R.drawable.goldenbird_downflap)
