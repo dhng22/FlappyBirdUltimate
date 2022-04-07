@@ -36,7 +36,7 @@ import java.util.LinkedList;
 
 /**
  *  Game created by duy hung
- *  @dhng.22
+ *  @author dhng.22
  */
 public class MainActivity extends AppCompatActivity {
     public static final int DEFAULT_SCORE_NUMBER = 3;
