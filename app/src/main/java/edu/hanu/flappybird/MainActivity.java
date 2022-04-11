@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -30,6 +31,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -1169,11 +1172,13 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 0);
         long time = calendar.getTimeInMillis();
         if (time < System.currentTimeMillis()) {
-            calendar2.set(Calendar.HOUR_OF_DAY, 24);
-            calendar2.set(Calendar.MINUTE, 0);
-
-            long minus = calendar2.getTimeInMillis() - calendar.getTimeInMillis();
-            time += minus;
+            calendar.set(Calendar.HOUR_OF_DAY, 7);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.DAY_OF_WEEK,
+                    calendar.get(Calendar.DAY_OF_WEEK) == 7 ?
+                            Calendar.SUNDAY :
+                            calendar.get(Calendar.DAY_OF_WEEK) + 1);
+            time = calendar.getTimeInMillis();
         }
         // set alarm notification
        alarmManager.setExact(AlarmManager.RTC_WAKEUP,time,reminderPending);
