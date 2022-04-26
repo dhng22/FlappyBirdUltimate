@@ -113,9 +113,7 @@ public class MainActivity extends AppCompatActivity {
     private void doSplash() {
         splashScreen = findViewById(R.id.splashScreen);
         new Handler().postDelayed(() -> splashScreen.animate().alpha(0).setDuration(300)
-                .withEndAction(() -> {
-                    runOnUiThread(() -> splashScreen.setVisibility(View.GONE));
-                }),
+                .withEndAction(() -> runOnUiThread(() -> splashScreen.setVisibility(View.GONE))),
                 2000 );
     }
 
