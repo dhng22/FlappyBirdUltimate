@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import edu.hanu.flappybird.service.AlarmReminder;
 import edu.hanu.flappybird.model.BirdObject;
 import edu.hanu.flappybird.model.PipeObject;
 import edu.hanu.flappybird.model.SuperPowerObject;
+import edu.hanu.flappybird.utils.DateUtils;
 import edu.hanu.flappybird.utils.GameUtils;
 /**
  * Game created by duy hung
@@ -80,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     MediaPlayer soundDead, soundWing, powerUp, soundSwoosh, backgrMusic, soundHit, soundPoint;
     DecelerateInterpolator decelerateInterpolator;
     AccelerateInterpolator accelerateInterpolator;
-    Calendar calendar, calendar2;
     AnimationDrawable animFlappingBird;
     AlarmManager alarmManager;
     Rect powerRect, pipeUpRect, pipeDownRect, birdRect, baseRect;
@@ -331,8 +332,6 @@ public class MainActivity extends AppCompatActivity {
 
         // service
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        calendar = Calendar.getInstance();
-        calendar2 = Calendar.getInstance();
 
     }
 
@@ -1122,43 +1121,9 @@ public class MainActivity extends AppCompatActivity {
         if (!sharedPreferences.getBoolean("startedService", false)) {
             editor.putBoolean("startedService", true);
             editor.commit();
-            long timeToSchedule = 0;
-            int currentYear = calendar.get(Calendar.YEAR);
-            int currentMonth = calendar.get(Calendar.MONTH);
-            int currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-            int currentHour = 7;
-            int currentMinute = 0;
-            calendar.set(currentYear, currentMonth, currentDayOfMonth, currentHour, currentMinute);
-            if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-                calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY));
-                calendar.set(currentYear, currentMonth, currentDayOfMonth);
-
-                int nextYear = (currentMonth == Calendar.DECEMBER &&
-                        currentDayOfMonth == calendar.getMaximum(Calendar.DAY_OF_MONTH)) ?
-                        currentYear + 1 : currentYear;
-                int nextMonth = currentDayOfMonth == calendar.getMaximum(Calendar.DAY_OF_MONTH) ?
-                        currentMonth == Calendar.DECEMBER ? Calendar.JANUARY : currentMonth + 1 : currentMonth;
-                int nextDay = currentDayOfMonth == calendar.getMaximum(Calendar.DAY_OF_MONTH) ?
-                        calendar.getMinimum(Calendar.DAY_OF_MONTH) : currentDayOfMonth + 1;
-
-                calendar2.set(Calendar.HOUR_OF_DAY, 7);
-                calendar2.set(Calendar.MINUTE, 0);
-                calendar2.set(nextYear, nextMonth, nextDay);
-
-                timeToSchedule = calendar2.getTimeInMillis() - calendar.getTimeInMillis();
-            } else {
-                calendar = Calendar.getInstance();
-                calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY));
-                calendar.set(currentYear, currentMonth, currentDayOfMonth);
-                calendar2.set(Calendar.HOUR_OF_DAY, 7);
-                calendar2.set(Calendar.MINUTE, 0);
-                calendar2.set(currentYear, currentMonth, currentDayOfMonth);
-                timeToSchedule = calendar2.getTimeInMillis() - calendar.getTimeInMillis();
-            }
             Intent intent = new Intent(this, AlarmReminder.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, JOB_ID_SEVEN, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timeToSchedule, pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + DateUtils.getTimeToGo(), pendingIntent);
         }
     }
 

@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import edu.hanu.flappybird.MainActivity;
+import edu.hanu.flappybird.utils.DateUtils;
 
 public class AlarmReminder extends BroadcastReceiver {
     ComponentName componentName;
@@ -18,7 +19,7 @@ public class AlarmReminder extends BroadcastReceiver {
 
         componentName = new ComponentName(context, ReminderScheduler.class);
         jobInfo = new JobInfo.Builder(MainActivity.JOB_ID_SEVEN, componentName)
-                .setPeriodic(24 * 60 * 60 * 1000)
+                .setPeriodic(DateUtils.getTimeToGo())
                 .build();
 
         scheduler.schedule(jobInfo);
