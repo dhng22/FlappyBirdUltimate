@@ -1,18 +1,11 @@
 package edu.hanu.flappybird.utils;
-
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
-import androidx.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.LinkedList;
-
 import edu.hanu.flappybird.R;
 import edu.hanu.flappybird.model.BirdObject;
 import edu.hanu.flappybird.model.PipeObject;
@@ -157,7 +150,6 @@ public class GameUtils {
                 for (SuperPowerObject superPower :
                         powerList) {
                     layoutParent.removeView(superPower);
-                    superPower = null;
                 }
                 powerList.clear();
             }

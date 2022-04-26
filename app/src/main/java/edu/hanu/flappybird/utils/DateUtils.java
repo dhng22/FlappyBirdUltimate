@@ -1,7 +1,5 @@
 package edu.hanu.flappybird.utils;
 
-import android.util.Log;
-
 import java.util.Calendar;
 
 public class DateUtils {

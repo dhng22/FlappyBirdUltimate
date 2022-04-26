@@ -23,6 +23,9 @@ public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
     public boolean userTouch;
     boolean isGoingUp;
     boolean isGoingDown;
+    public int coin;
+    public boolean hasTakenCoin;
+
 
     public BirdObject(Context context) {
         super(context);
@@ -43,17 +46,17 @@ public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
     public void initialize() {
         isGoingUp = false;
         isGoingDown = false;
-
+        hasTakenCoin = false;
         userTouch = false;
 
         score = 0;
-
+        coin = 0;
         status = WAITING;
 
         imgSource = new Bitmap[3];
         imgSource[0] = BitmapFactory.decodeResource(getResources(), R.drawable.bluebird_upflap);
-        imgSource[1] = BitmapFactory.decodeResource(getResources(),R.drawable.bluebird_midflap);
-        imgSource[2] = BitmapFactory.decodeResource(getResources(),R.drawable.bluebird_downflap);
+        imgSource[1] = BitmapFactory.decodeResource(getResources(), R.drawable.bluebird_midflap);
+        imgSource[2] = BitmapFactory.decodeResource(getResources(), R.drawable.bluebird_downflap);
         setImageSource(imgSource);
 
         superPower = SuperPower.POISON;
@@ -85,9 +88,11 @@ public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
         setImageBitmap(birdUp);
     }
 
+/*
     public void stayMid() {
         setImageBitmap(birdMid);
     }
+*/
 
     public void fallDown() {
         setImageBitmap(birdDown);

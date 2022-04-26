@@ -1,108 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/layoutParent"
-    android:background="@drawable/background_day"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_day"
     tools:context=".MainActivity">
 
     <ImageView
-        android:scaleType="fitXY"
         android:id="@+id/imgBackGrNight"
-        android:alpha="0"
-        android:src="@drawable/background_night"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:scaleType="fitXY"
+        android:src="@drawable/background_night" />
 
     <ImageView
         android:id="@+id/imgCloudScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/backgr_cloud"/>
+        android:src="@drawable/backgr_cloud" />
 
     <ImageView
         android:id="@+id/imgCloudScreen2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/backgr_cloud"/>
+        android:src="@drawable/backgr_cloud" />
+
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/gameControlPanel"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
         <ImageView
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="15dp"
-            android:layout_toEndOf="@id/secondNumber"
             android:id="@+id/lastNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@id/secondNumber"
             android:src="@drawable/zero" />
 
         <ImageView
-            android:layout_marginStart="2dp"
             android:id="@+id/secondNumber"
-            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/zero"
-            />
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/zero" />
 
         <ImageView
             android:id="@+id/firstNumber"
-            android:layout_toStartOf="@id/secondNumber"
-            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_toStartOf="@id/secondNumber"
             android:src="@drawable/zero" />
 
         <ImageButton
-            android:background="@android:color/transparent"
             android:id="@+id/btn_pause"
             android:layout_width="70dp"
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="5dp"
+            android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/img_pause" />
 
         <ImageView
-            android:alpha="0"
             android:id="@+id/doubleScr"
-            android:layout_toEndOf="@id/lastNumber"
-            android:layout_marginEnd="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginTop="15dp"
-            android:src="@drawable/doublescr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@id/lastNumber"
+            android:alpha="0"
+            android:src="@drawable/doublescr" />
     </RelativeLayout>
+
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/pauseScreen"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
         <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            android:layout_centerInParent="true"
-            android:src="@drawable/board"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:src="@drawable/board" />
+
         <ImageButton
-            android:background="@android:color/transparent"
             android:id="@+id/btn_play"
-            android:layout_marginEnd="75dp"
             android:layout_width="90dp"
             android:layout_height="45dp"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
+            android:layout_marginEnd="75dp"
+            android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/img_play" />
 
@@ -116,13 +119,14 @@
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/img_replay" />
+
         <ImageButton
             android:id="@+id/btn_Sound"
             android:layout_width="90dp"
             android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
             android:layout_above="@id/btn_replay"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/sound_on" />
@@ -138,11 +142,12 @@
             android:src="@drawable/music_on" />
 
     </RelativeLayout>
+
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/deathScreen"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/tempBoard"
@@ -156,8 +161,8 @@
             android:id="@+id/temp_over"
             android:layout_width="250dp"
             android:layout_height="75dp"
-            android:layout_marginTop="10dp"
             android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
             android:scaleType="fitCenter"
             android:src="@drawable/gameover"
             android:visibility="invisible" />
@@ -172,39 +177,60 @@
             android:src="@drawable/gameover" />
 
         <ImageButton
-            android:layout_marginTop="20dp"
             android:id="@+id/btn_restart"
             android:layout_width="65dp"
             android:layout_height="60dp"
             android:layout_below="@id/img_over"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/img_replay" />
     </RelativeLayout>
-
     <ImageView
+        android:visibility="invisible"
         android:id="@+id/imgBase"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:src="@drawable/base" />
+    <HorizontalScrollView
+        android:translationZ="0.05dp"
+        android:scrollbars="none"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/imgBaseDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/base" />
+    </HorizontalScrollView>
 
-    <ImageView
-        android:id="@+id/imgBaseNight"
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:alpha="0"
-        android:scaleType="fitXY"
-        android:src="@drawable/base_night" />
+        android:scrollbars="none"
+        android:translationZ="0.05dp">
+
+        <ImageView
+            android:id="@+id/imgBaseNight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0"
+            android:scaleType="fitXY"
+            android:src="@drawable/base_night" />
+    </HorizontalScrollView>
+
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/waitingScreen"
-        android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/img_message"
@@ -214,42 +240,174 @@
             android:src="@drawable/message" />
 
         <ImageView
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
-            android:layout_alignParentEnd="true"
             android:id="@+id/lastHighestNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
             android:src="@drawable/zero" />
 
         <ImageView
-            android:layout_marginStart="2dp"
             android:id="@+id/secondHighestNumber"
-            android:layout_toStartOf="@id/lastHighestNumber"
-            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/zero"
-            />
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_toStartOf="@id/lastHighestNumber"
+            android:src="@drawable/zero" />
 
         <ImageView
             android:id="@+id/firstHighestNumber"
-            android:layout_toStartOf="@id/secondHighestNumber"
-            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_toStartOf="@id/secondHighestNumber"
             android:src="@drawable/zero" />
 
         <ImageView
+            android:id="@+id/imgMedal"
             android:layout_width="50dp"
             android:layout_height="75dp"
+            android:layout_below="@id/secondHighestNumber"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_below="@id/secondHighestNumber"
             android:scaleType="fitXY"
             android:src="@drawable/medal" />
+
+        <ImageView
+            android:id="@+id/imgCart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imgMedal"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:src="@drawable/cart" />
+
+        <HorizontalScrollView
+            android:id="@+id/shoppingPlace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:scrollbars="none"
+            android:translationZ="0.9dp"
+            android:visibility="invisible">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/shopBluePot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/bluepot" />
+
+                <ImageView
+                    android:id="@+id/shopRedPot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/redpot" />
+
+                <ImageView
+                    android:id="@+id/shopPurplePot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/purplepot" />
+
+                <ImageView
+                    android:id="@+id/shopGoldenPot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/goldenpot" />
+
+                <ImageView
+                    android:id="@+id/shopYellowPot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/yellowpot" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
     </RelativeLayout>
 
+    <ImageView
+        android:translationZ="1dp"
+        android:id="@+id/imgShowCoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        />
+
+    <TextView
+        android:id="@+id/txtCoin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/imgShowCoin"
+        android:fontFamily="@font/arcade"
+        android:text=" x 0"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp"
+        android:translationZ="1dp" />
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:translationZ="20dp"
+        android:clickable="false"
+        android:id="@+id/splashScreen"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/background_day" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/arcade"
+            android:textSize="55sp"
+            android:text="Flappy\n.Bird."
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/guideline2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintGuide_percent="0.5"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
