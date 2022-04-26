@@ -5,6 +5,7 @@
         android:toAlpha="0.3"
         android:duration="300"
         android:repeatMode="reverse"
-        android:repeatCount="3"
+        android:repeatCount="5"
+        android:interpolator="@android:anim/accelerate_interpolator"
         />
 </set>
