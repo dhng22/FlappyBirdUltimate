@@ -111,13 +111,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doSplash() {
-        layoutParent = findViewById(R.id.layoutParent);
-        layoutParent.setOnClickListener(null);
         splashScreen = findViewById(R.id.splashScreen);
         new Handler().postDelayed(() -> splashScreen.animate().alpha(0).setDuration(300)
                 .withEndAction(() -> {
                     runOnUiThread(() -> splashScreen.setVisibility(View.GONE));
-                    layoutParent.setOnClickListener(waitingScreenListener);
                 }),
                 2000 );
     }
@@ -134,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
      * Just mapping View
      */
     private void mapping() {
+        layoutParent = findViewById(R.id.layoutParent);
         // executing button
         btnPause = findViewById(R.id.btn_pause);
         btnPlay = findViewById(R.id.btn_play);
@@ -383,7 +381,8 @@ public class MainActivity extends AppCompatActivity {
                 mainBird.coin--;
                 setGameCoin();
                 layoutParent.performClick();
-                turnInvulnerable();
+                mainBird.setSuperPower(SuperPower.INVULNERABLE);
+                actionPowerEffect();
                 if (soundOn) {
                     powerUp.start();
                 }
@@ -398,7 +397,8 @@ public class MainActivity extends AppCompatActivity {
                 mainBird.coin -= 2;
                 setGameCoin();
                 layoutParent.performClick();
-                turnGiant();
+                mainBird.setSuperPower(SuperPower.GIANT);
+                actionPowerEffect();
                 if (soundOn) {
                     powerUp.start();
                 }
@@ -415,7 +415,8 @@ public class MainActivity extends AppCompatActivity {
                 mainBird.coin -= 2;
                 setGameCoin();
                 layoutParent.performClick();
-                turnPoison();
+                mainBird.setSuperPower(SuperPower.POISON);
+                actionPowerEffect();
                 if (soundOn) {
                     powerUp.start();
                 }
@@ -431,7 +432,8 @@ public class MainActivity extends AppCompatActivity {
                 mainBird.coin -= 3;
                 setGameCoin();
                 layoutParent.performClick();
-                turnGolden();
+                mainBird.setSuperPower(SuperPower.GOLDEN);
+                actionPowerEffect();
                 if (soundOn) {
                     powerUp.start();
                 }
@@ -446,7 +448,8 @@ public class MainActivity extends AppCompatActivity {
                 mainBird.coin -= 4;
                 setGameCoin();
                 layoutParent.performClick();
-                turnSpeed();
+                mainBird.setSuperPower(SuperPower.SPEED);
+                actionPowerEffect();
                 if (soundOn) {
                     powerUp.start();
                 }
@@ -1389,7 +1392,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void turnGolden() {
         mainBird.setImageSource(goldenBirdSource);
-        mainBird.setSuperPower(SuperPower.GOLDEN);
         imgDoubleSrc.setAlpha(1f);
         changePipeColor();
         powerExecHandler.postDelayed(onPowerExhaust, (long) (DEFAULT_PIPE_GENERATION * 4.5f));
@@ -1400,7 +1402,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void turnPoison() {
         mainBird.setImageSource(poisonBirdSource);
-        mainBird.setSuperPower(SuperPower.POISON);
         changePipeColor();
         powerExecHandler.postDelayed(onPowerExhaust, DEFAULT_PIPE_GENERATION * 6);
     }
@@ -1409,7 +1410,6 @@ public class MainActivity extends AppCompatActivity {
      * bird receive invulnerable power
      */
     private void turnInvulnerable() {
-        mainBird.setSuperPower(SuperPower.INVULNERABLE);
         mainBird.setAlpha(0.5f);
         powerExecHandler.postDelayed(onPowerExhaust, DEFAULT_PIPE_GENERATION * 3);
     }
@@ -1419,7 +1419,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void turnSpeed() {
         mainBird.setImageSource(speedBirdSource);
-        mainBird.setSuperPower(SuperPower.SPEED);
         gameSpeedUp(9f);
         resumeObjectAnimation();
         powerExecHandler.postDelayed(onPowerExhaust, DEFAULT_PIPE_GENERATION);
@@ -1430,7 +1429,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void turnGiant() {
         mainBird.setImageSource(giantBirdSource);
-        mainBird.setSuperPower(SuperPower.GIANT);
         powerExecHandler.postDelayed(onPowerExhaust, DEFAULT_PIPE_GENERATION * 6);
     }
 
