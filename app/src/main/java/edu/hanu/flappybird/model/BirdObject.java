@@ -1,4 +1,4 @@
-package edu.hanu.flappybird;
+package edu.hanu.flappybird.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,6 +6,9 @@ import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
+
+import edu.hanu.flappybird.R;
+import edu.hanu.flappybird.SuperPower;
 
 public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
     public static final String DEAD = "isDead";
@@ -17,7 +20,9 @@ public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
     private String status;
     Bitmap birdUp, birdDown, birdMid;
     public int score;
-    boolean userTouch, isGoingUp,isGoingDown;
+    public boolean userTouch;
+    boolean isGoingUp;
+    boolean isGoingDown;
 
     public BirdObject(Context context) {
         super(context);
@@ -46,12 +51,12 @@ public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
         status = WAITING;
 
         imgSource = new Bitmap[3];
-        imgSource[0] = BitmapFactory.decodeResource(getResources(),R.drawable.bluebird_upflap);
+        imgSource[0] = BitmapFactory.decodeResource(getResources(), R.drawable.bluebird_upflap);
         imgSource[1] = BitmapFactory.decodeResource(getResources(),R.drawable.bluebird_midflap);
         imgSource[2] = BitmapFactory.decodeResource(getResources(),R.drawable.bluebird_downflap);
         setImageSource(imgSource);
 
-        superPower = SuperPower.NONE;
+        superPower = SuperPower.POISON;
     }
 
     public void setImageSource(Bitmap[] imgSource) {

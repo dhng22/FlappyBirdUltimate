@@ -1,4 +1,4 @@
-package edu.hanu.flappybird;
+package edu.hanu.flappybird.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,6 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import java.io.Serializable;
+
+import edu.hanu.flappybird.R;
+import edu.hanu.flappybird.SuperPower;
 
 public class SuperPowerObject extends AppCompatImageView implements Serializable {
     SuperPower superPower;

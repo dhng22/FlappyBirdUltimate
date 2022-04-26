@@ -1,8 +1,7 @@
-package edu.hanu.flappybird;
+package edu.hanu.flappybird.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,7 +9,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 
 public class PipeObject extends AppCompatImageView {
     Bitmap pipeBitmap;
-    boolean isScored;
+    public boolean isScored;
+    public boolean playedAnimation;
     public PipeObject(@NonNull Context context, Bitmap pipeBitmap) {
         super(context);
         this.pipeBitmap = pipeBitmap;
@@ -35,6 +35,7 @@ public class PipeObject extends AppCompatImageView {
     private void initialize() {
         setImageBitmap(pipeBitmap);
         isScored = false;
+        playedAnimation = false;
     }
 
     public Bitmap getPipeBitmap() {
