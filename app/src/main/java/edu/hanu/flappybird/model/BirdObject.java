@@ -59,7 +59,7 @@ public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
         imgSource[2] = BitmapFactory.decodeResource(getResources(), R.drawable.bluebird_downflap);
         setImageSource(imgSource);
 
-        superPower = SuperPower.POISON;
+        superPower = SuperPower.NONE;
     }
 
     public void setImageSource(Bitmap[] imgSource) {
