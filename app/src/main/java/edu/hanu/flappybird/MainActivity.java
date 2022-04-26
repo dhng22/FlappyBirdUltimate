@@ -20,7 +20,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -320,7 +319,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 pipeCount++;
-                Log.e("tag", "wrong? " + mainBird.score);
                 if (pipeCount % 10 == 0 && pipeCount != 0) {
                     pipeSourceDown = pipeRed;
                     pipeSourceUp = pipeRedUp;
