@@ -111,9 +111,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void doSplash() {
+        layoutParent = findViewById(R.id.layoutParent);
+        layoutParent.setOnClickListener(null);
         splashScreen = findViewById(R.id.splashScreen);
         new Handler().postDelayed(() -> splashScreen.animate().alpha(0).setDuration(300)
-                .withEndAction(() -> runOnUiThread(() -> splashScreen.setVisibility(View.GONE))),
+                .withEndAction(() -> {
+                    runOnUiThread(() -> splashScreen.setVisibility(View.GONE));
+                    layoutParent.setOnClickListener(waitingScreenListener);
+                }),
                 2000 );
     }
 
@@ -142,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         cloudScreen2 = findViewById(R.id.imgCloudScreen2);
 
         backgroundNight = findViewById(R.id.imgBackGrNight);
-        layoutParent = findViewById(R.id.layoutParent);
         gameControlPanel = findViewById(R.id.gameControlPanel);
         gameControlPanel.setZ(0.95f);
         waitingScreen = findViewById(R.id.waitingScreen);
@@ -508,7 +512,7 @@ public class MainActivity extends AppCompatActivity {
                 if (soundOn) {
                     soundSwoosh.start();
                 }
-                if (!mainBird.getStatus().equals(BirdObject.DEAD)) {
+                if (mainBird.getStatus().equals(BirdObject.PLAYING)) {
                     animBirdGoingDown.setFloatValues(mainBird.getY(), screenHeight);
                     animBirdGoingDown.start();
                     birdGoesDown();
@@ -925,6 +929,8 @@ public class MainActivity extends AppCompatActivity {
         pauseScreen.setAlpha(0);
         pauseScreen.animate().alpha(1).setDuration(100).start();
         btnPlay.setOnClickListener(v -> {
+            imgBaseDay.startAnimation(animMovingBase);
+            imgBaseNight.startAnimation(animMovingBase);
             if (musicOn) {
                 if (backgrMusic == null) {
                     backgrMusic = MediaPlayer.create(this, R.raw.background);
@@ -980,6 +986,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pauseGameManually() {
+        imgBaseNight.clearAnimation();
+        imgBaseDay.clearAnimation();
         if (musicOn && backgrMusic != null) {
             backgrMusic.pause();
         }

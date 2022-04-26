@@ -4,7 +4,7 @@
     <translate
         android:fromXDelta="0%"
         android:toXDelta="-25%"
-        android:duration="1500"
+        android:duration="1125"
         android:repeatCount="infinite"
         android:repeatMode="restart"
         />
