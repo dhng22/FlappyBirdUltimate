@@ -35,11 +35,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import java.util.HashMap;
 import java.util.LinkedList;
-
 import edu.hanu.flappybird.service.AlarmReminder;
 import edu.hanu.flappybird.model.BirdObject;
 import edu.hanu.flappybird.model.PipeObject;
@@ -53,7 +50,7 @@ import edu.hanu.flappybird.utils.NumberUtils;
  *
  * @author dhng.22
  */
-public class MainActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
     public static final int DEFAULT_SCORE_NUMBER = 3;
     public static final int DEFAULT_PIPE_GENERATION = 2100;
     public static final int DEFAULT_PIPE_SPEED = 3000;
@@ -254,13 +251,14 @@ public class MainActivity extends AppCompatActivity {
         mainBird = new BirdObject(this);
         birdCard = new CardView(this);
         birdCard.setLayoutParams(params);
+        birdCard.setBackgroundColor(Color.TRANSPARENT);
+
         layoutParent.addView(birdCard);
         GameUtils.Bird.birdObject = mainBird;
         GameUtils.Bird.initBirdObject(birdCard, params);
 
         cloudScreen.setX(screenWidth);
         cloudScreen2.setX(0);
-
 
         imgBase.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -293,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         // two main listener control game and control waiting screen
         waitingScreenListener = v -> {
             animFlappingBird.setVisible(false, true);
-            birdCard.setBackground(null);
+            mainBird.setBackground(null);
             mainBird.setStatus(BirdObject.PLAYING);
             layoutParent.setOnClickListener(controlBirdListener);
             hideWaitingScreen();
@@ -378,15 +376,11 @@ public class MainActivity extends AppCompatActivity {
             imgCart.startAnimation(animTouchCart);
         });
 
-        imgSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleSetting();
-                imgSetting.startAnimation(animTouchSetting);
-            }
+        imgSetting.setOnClickListener(v -> {
+            toggleSetting();
+            imgSetting.startAnimation(animTouchSetting);
         });
         imgShopBluePot.setOnClickListener(v -> {
-            imgShopBluePot.startAnimation(animTouchBlue);
             if (mainBird.coin >= 1) {
                 mainBird.coin--;
                 setGameCoin();
@@ -397,12 +391,12 @@ public class MainActivity extends AppCompatActivity {
                     powerUp.start();
                 }
             } else {
+                imgShopBluePot.startAnimation(animTouchBlue);
                 coinColor(Color.RED);
                 imgCoin.startAnimation(animErrorCoin);
             }
         });
         imgShopRedPot.setOnClickListener(v -> {
-            imgShopRedPot.startAnimation(animTouchRed);
             if (mainBird.coin >= 2) {
                 mainBird.coin -= 2;
                 setGameCoin();
@@ -413,6 +407,7 @@ public class MainActivity extends AppCompatActivity {
                     powerUp.start();
                 }
             } else {
+                imgShopRedPot.startAnimation(animTouchRed);
                 coinColor(Color.RED);
                 imgCoin.startAnimation(animErrorCoin);
             }
@@ -420,7 +415,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         imgShopPurplePot.setOnClickListener(v -> {
-            imgShopPurplePot.startAnimation(animTouchPurple);
             if (mainBird.coin >= 2) {
                 mainBird.coin -= 2;
                 setGameCoin();
@@ -431,13 +425,13 @@ public class MainActivity extends AppCompatActivity {
                     powerUp.start();
                 }
             } else {
+                imgShopPurplePot.startAnimation(animTouchPurple);
                 coinColor(Color.RED);
                 imgCoin.startAnimation(animErrorCoin);
             }
 
         });
         imgShopGoldenPot.setOnClickListener(v -> {
-            imgShopGoldenPot.startAnimation(animTouchGolden);
             if (mainBird.coin >= 3) {
                 mainBird.coin -= 3;
                 setGameCoin();
@@ -448,12 +442,12 @@ public class MainActivity extends AppCompatActivity {
                     powerUp.start();
                 }
             } else {
+                imgShopGoldenPot.startAnimation(animTouchGolden);
                 coinColor(Color.RED);
                 imgCoin.startAnimation(animErrorCoin);
             }
         });
         imgShopYellowPot.setOnClickListener(v -> {
-            imgShopYellowPot.startAnimation(animTouchYellow);
             if (mainBird.coin >= 4) {
                 mainBird.coin -= 4;
                 setGameCoin();
@@ -464,6 +458,7 @@ public class MainActivity extends AppCompatActivity {
                     powerUp.start();
                 }
             } else {
+                imgShopYellowPot.startAnimation(animTouchYellow);
                 coinColor(Color.RED);
                 imgCoin.startAnimation(animErrorCoin);
             }
@@ -518,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
 
         highScore = sharedPreferences.getInt("highScore", 0);
-        mainBird.coin = sharedPreferences.getInt("coin", 0);
+        mainBird.coin = sharedPreferences.getInt("coin", 10);
         setGameCoin();
 
         soundOn = sharedPreferences.getBoolean("soundOn", true);
@@ -612,7 +607,7 @@ public class MainActivity extends AppCompatActivity {
         animFlappingBird.addFrame(new BitmapDrawable(getResources(), originalSource[2]), DEFAULT_FLAPPING_SPEED);
         animFlappingBird.addFrame(new BitmapDrawable(getResources(), originalSource[1]), DEFAULT_FLAPPING_SPEED);
         animFlappingBird.setOneShot(false);
-        birdCard.setBackground(animFlappingBird);
+        mainBird.setBackground(animFlappingBird);
         animFlippingCoin = new AnimationDrawable();
         animFlippingCoin.addFrame(AppCompatResources.getDrawable(this, R.drawable.coin1), 90);
         animFlippingCoin.addFrame(AppCompatResources.getDrawable(this, R.drawable.coin2), 90);
@@ -716,7 +711,6 @@ public class MainActivity extends AppCompatActivity {
             mainBird.setStatus(BirdObject.PAUSE);
             pauseGameManually();
         }
-
     }
 
     /**
@@ -734,19 +728,20 @@ public class MainActivity extends AppCompatActivity {
     private void handlePowerEvent() {
         if (powerList.size() > 0) {
             SuperPowerObject superPowerObject = powerList.peek();
-            assert superPowerObject != null;
-            //check here
-            if (superPowerObject.getX() <= screenWidth / 2f) {
-                if (superPowerObject.getX() <= -(screenWidth / 4f)) {
-                    actionRemovePower(superPowerObject);
-                }
-                superPowerObject.getHitRect(powerRect);
-                birdCard.getHitRect(birdRect);
-                // set power to the bird and remove power from screen
-                if (birdRect.intersect(powerRect)) {
-                    mainBird.setSuperPower(superPowerObject.getSuperPower());
-                    actionPowerEffect();
-                    actionRemovePower(superPowerObject);
+            if (superPowerObject != null) {
+                //check here
+                if (superPowerObject.getX() <= screenWidth / 2f && superPowerObject.getX() >= pipeWidth - (pipeWidth / 4.0)) {
+                    if (superPowerObject.getX() <= -(screenWidth / 4f)) {
+                        actionRemovePower(superPowerObject);
+                    }
+                    superPowerObject.getHitRect(powerRect);
+                    birdCard.getHitRect(birdRect);
+                    // set power to the bird and remove power from screen
+                    if (birdRect.intersect(powerRect)) {
+                        mainBird.setSuperPower(superPowerObject.getSuperPower());
+                        actionPowerEffect();
+                        actionRemovePower(superPowerObject);
+                    }
                 }
             }
         }
@@ -758,15 +753,19 @@ public class MainActivity extends AppCompatActivity {
     private void handlePipeEvent() {
         if (pipeList.size() > 0) {
             for (int i = 0; i < pipeList.size(); i++) {
-                PipeObject[] pipePair = pipeList.get(i);
+                PipeObject[] pipePair;
+                try {
+                    pipePair = pipeList.get(i);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    pipePair = pipeList.get(i - 1);
+                }
                 PipeObject pipeUp = pipePair[0];
                 PipeObject pipeDown = pipePair[1];
                 // check bird collision with pipe
-                if (pipeUp.getX() <= screenWidth / 2f) {
+                if (pipeUp.getX() <= screenWidth / 2f && pipeUp.getX() >= pipeWidth - (pipeWidth/1.5)) {
 
                     //check if the bird pass through pipe and has taken the score
                     handleScoreEvent(pipeUp);
-
                     if (mainBird.getSuperPower().equals(SuperPower.POISON)) {
                         withDrawPipe(pipeUp, pipeDown);
                     }
@@ -869,7 +868,7 @@ public class MainActivity extends AppCompatActivity {
         animObserver.start();
         mainBird.setImageBitmap(null);
         birdCard.setRotation(0);
-        birdCard.setBackground(animFlappingBird);
+        mainBird.setBackground(animFlappingBird);
         animFlappingBird.setVisible(true, true);
         animFlappingBird.start();
         movingCloud.start();
@@ -1242,13 +1241,14 @@ public class MainActivity extends AppCompatActivity {
                 .setDuration(pipeSpeed)
                 .withEndAction(() -> {
                     PipeObject[] pipePair1 = pipeList.poll();
-                    assert pipePair1 != null;
-                    pipePair1[0].animate().cancel();
-                    pipePair1[1].animate().cancel();
-                    layoutParent.removeView(pipePair1[0]);
-                    layoutParent.removeView(pipePair1[1]);
-                    pipePair1[0] = null;
-                    pipePair1[1] = null;
+                    if (pipePair1 != null) {
+                        pipePair1[0].animate().cancel();
+                        pipePair1[1].animate().cancel();
+                        layoutParent.removeView(pipePair1[0]);
+                        layoutParent.removeView(pipePair1[1]);
+                        pipePair1[0] = null;
+                        pipePair1[1] = null;
+                    }
                 })
                 .start();
     }
@@ -1264,9 +1264,10 @@ public class MainActivity extends AppCompatActivity {
                 .setDuration(powerSpeed)
                 .withEndAction(() -> {
                     SuperPowerObject superPowerObject1 = powerList.poll();
-                    assert superPowerObject1 != null;
-                    superPowerObject1.animate().cancel();
-                    layoutParent.removeView(superPowerObject1);
+                    if (superPowerObject1 != null) {
+                        superPowerObject1.animate().cancel();
+                        layoutParent.removeView(superPowerObject1);
+                    }
                 })
                 .start();
     }
@@ -1345,13 +1346,14 @@ public class MainActivity extends AppCompatActivity {
                         .setDuration(dur)
                         .withEndAction(() -> {
                             PipeObject[] pipePair1 = pipeList.poll();
-                            assert pipePair1 != null;
-                            pipePair1[0].animate().cancel();
-                            pipePair1[1].animate().cancel();
-                            layoutParent.removeView(pipePair1[0]);
-                            layoutParent.removeView(pipePair1[1]);
-                            pipePair1[0] = null;
-                            pipePair1[1] = null;
+                            if (pipePair1 != null) {
+                                pipePair1[0].animate().cancel();
+                                pipePair1[1].animate().cancel();
+                                layoutParent.removeView(pipePair1[0]);
+                                layoutParent.removeView(pipePair1[1]);
+                                pipePair1[0] = null;
+                                pipePair1[1] = null;
+                            }
                         })
                         .start();
             }
@@ -1366,15 +1368,16 @@ public class MainActivity extends AppCompatActivity {
         if (powerList.size() > 0) {
             for (int i = 0; i < powerList.size(); i++) {
                 SuperPowerObject object = powerList.get(i);
-                long dur = powerSpeed - (int) getTimeToGo(object.getX());
+                long dur = getTimeToGo(object.getX());
                 object.animate().translationX(-pipeWidth)
                         .setInterpolator(linearInterpolator)
                         .setDuration(dur)
                         .withEndAction(() -> {
                             SuperPowerObject object1 = powerList.poll();
-                            assert object1 != null;
-                            object1.animate().cancel();
-                            layoutParent.removeView(object1);
+                            if (object1 != null) {
+                                object1.animate().cancel();
+                                layoutParent.removeView(object1);
+                            }
                         })
                         .start();
             }

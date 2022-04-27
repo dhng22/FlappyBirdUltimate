@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_day"
-    tools:context=".MainActivity">
+    tools:context=".GameActivity">
 
     <ImageView
         android:id="@+id/imgBackGrNight"
@@ -471,6 +471,7 @@
             android:src="@drawable/background_day" />
 
         <TextView
+            android:textColor="#B5FFFFFF"
             android:id="@+id/txtSplash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

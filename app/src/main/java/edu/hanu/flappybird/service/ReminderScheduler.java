@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import edu.hanu.flappybird.MainActivity;
+import edu.hanu.flappybird.GameActivity;
 import edu.hanu.flappybird.MyApplication;
 import edu.hanu.flappybird.R;
 
@@ -15,7 +15,7 @@ public class ReminderScheduler extends JobService {
     public static final int reminderId = 221;
     @Override
     public boolean onStartJob(JobParameters params) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, GameActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, reminderId, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
         Notification notificationCompat = new NotificationCompat
                 .Builder(getApplicationContext(), MyApplication.channel_reminder)
