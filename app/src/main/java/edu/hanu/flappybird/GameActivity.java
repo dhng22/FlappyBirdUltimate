@@ -864,8 +864,10 @@ public class GameActivity extends AppCompatActivity {
      * setting the waiting screen and others related component
      */
     private void setToWaitingStatus() {
+        mainBird.setStatus(BirdObject.WAITING);
         normalHandler.postDelayed(() -> animObserver.addUpdateListener(updateListener), 200);
         animObserver.start();
+        mainBird.setAlpha(1f);
         mainBird.setImageBitmap(null);
         birdCard.setRotation(0);
         mainBird.setBackground(animFlappingBird);
@@ -875,7 +877,6 @@ public class GameActivity extends AppCompatActivity {
         movingCloud2.start();
         imgBaseDay.startAnimation(animMovingBase);
         imgBaseNight.startAnimation(animMovingBase);
-        mainBird.setStatus(BirdObject.WAITING);
         showWaitingScreen();
         birdIdlingAnimationExec();
         setHighScore();
