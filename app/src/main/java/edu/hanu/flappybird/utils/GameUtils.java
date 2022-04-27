@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.cardview.widget.CardView;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import edu.hanu.flappybird.R;
@@ -72,13 +75,13 @@ public class GameUtils {
 
     public static class Bird {
         public static BirdObject birdObject;
-
-        public static void initBirdObject(RelativeLayout layoutParent,
+        public static void initBirdObject(CardView layoutParent,
                                           LinearLayout.LayoutParams layoutParams) {
             birdObject.setLayoutParams(layoutParams);
             layoutParent.addView(birdObject);
-            birdObject.setZ(0.75f);
-
+            layoutParent.setZ(0.75f);
+            layoutParent.setPreventCornerOverlap(true);
+            layoutParent.setRadius(90);
         }
     }
 
