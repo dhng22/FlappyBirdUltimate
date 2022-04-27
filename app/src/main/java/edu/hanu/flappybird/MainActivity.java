@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int DEFAULT_SCORE_NUMBER = 3;
     public static final int DEFAULT_PIPE_GENERATION = 2100;
     public static final int DEFAULT_PIPE_SPEED = 3000;
-    public static final int DEFAULT_POWER_GENERATION = 21000;
+    public static final int DEFAULT_POWER_GENERATION = 11;
     public static final int DEFAULT_DAY_NIGHT_CYCLE = 60000;
     public static final int DEFAULT_FLAPPING_SPEED = 100;
     public static final int JOB_ID_SEVEN = 7;
@@ -68,10 +68,10 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout layoutParent, waitingScreen, pauseScreen, deathScreen, gameControlPanel;
     ImageView imgMessage, imgLastHighestNumber, imgSecondHighestNumber, imgFirstHighestNumber, imgDoubleSrc,
             imgLastNumber, imgSecondNumber, imgFirstNumber, imgBase, imgCoin, imgBaseNight, imgBaseDay, backgroundNight, cloudScreen, cloudScreen2,
-            imgCart, imgShopBluePot, imgShopRedPot, imgShopPurplePot, imgShopGoldenPot, imgShopYellowPot;
+            imgCart, imgSetting, imgShopBluePot, imgShopRedPot, imgShopPurplePot, imgShopGoldenPot, imgShopYellowPot, btnSoundMain, btnMusicMain;
     LinearLayout.LayoutParams params, powerParams;
     Animation animMessageBlink, animBirdBlinkStart, animBirdBlinkEnd, animPowerUp, animMovingBase,
-            animTouchCart, animErrorCoin, animTouchBlue, animTouchRed, animTouchPurple, animTouchGolden,
+            animTouchCart, animTouchSetting, animErrorCoin, animTouchBlue, animTouchRed, animTouchPurple, animTouchGolden,
             animTouchYellow;
     ObjectAnimator animBirdIdling, animBirdGoingUp, animBirdGoingDown, movingCloud, movingCloud2,
             animObserver;
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     Handler addPipeHandler, addPowerHandler, normalHandler, powerExecHandler;
     Runnable execPipe, execPower, onPowerExhaust;
     LinearInterpolator linearInterpolator;
-    int screenHeight, screenWidth, baseHeight, highScore, pipeCount, powerSpeed, pipeGenSpeed, pipeSpeed, pipeWidth, pipeHeight;
+    int screenHeight, screenWidth, baseHeight, highScore, pipeCount, pipeCountForPower, powerSpeed, pipeGenSpeed, pipeSpeed, pipeWidth, pipeHeight;
     float minY, maxY;
     boolean isDay, soundOn, musicOn;
     Bitmap[] giantBirdSource, speedBirdSource, originalSource, poisonBirdSource, goldenBirdSource;
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     Rect powerRect, pipeUpRect, pipeDownRect, birdRect, baseRect;
     HorizontalScrollView shoppingPlace;
     TextView txtCoin;
-    ConstraintLayout splashScreen;
+    ConstraintLayout splashScreen, settingPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity {
     private void doSplash() {
         splashScreen = findViewById(R.id.splashScreen);
         new Handler().postDelayed(() -> splashScreen.animate().alpha(0).setDuration(300)
-                .withEndAction(() -> runOnUiThread(() -> splashScreen.setVisibility(View.GONE))),
-                2000 );
+                        .withEndAction(() -> runOnUiThread(() -> splashScreen.setVisibility(View.GONE))),
+                1400);
     }
 
     private void initialize() {
@@ -137,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
         btnRestart = findViewById(R.id.btn_restart);
         btnSound = findViewById(R.id.btn_Sound);
         btnMusic = findViewById(R.id.btn_Music);
+        btnSoundMain = findViewById(R.id.btn_SoundMain);
+        btnMusicMain = findViewById(R.id.btn_MusicMain);
 
         // main screen components
         cloudScreen = findViewById(R.id.imgCloudScreen);
@@ -164,7 +166,9 @@ public class MainActivity extends AppCompatActivity {
         imgBaseNight = findViewById(R.id.imgBaseNight);
         imgBaseDay = findViewById(R.id.imgBaseDay);
         imgCart = findViewById(R.id.imgCart);
+        imgSetting = findViewById(R.id.imgSetting);
         shoppingPlace = findViewById(R.id.shoppingPlace);
+        settingPlace = findViewById(R.id.mainSetting);
         imgShopBluePot = findViewById(R.id.shopBluePot);
         imgShopRedPot = findViewById(R.id.shopRedPot);
         imgShopPurplePot = findViewById(R.id.shopPurplePot);
@@ -291,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
             layoutParent.setOnClickListener(controlBirdListener);
             hideWaitingScreen();
             layoutParent.performClick();
-            startAddingObject();
+            startAddingPipe();
         };
         controlBirdListener = v -> runOnUiThread(() -> {
             animBirdGoingDown.cancel();
@@ -318,7 +322,10 @@ public class MainActivity extends AppCompatActivity {
         execPipe = new Runnable() {
             @Override
             public void run() {
-                pipeCount++;
+                countPipe();
+                if (pipeCountForPower % DEFAULT_POWER_GENERATION == 0 && pipeCountForPower != 0) {
+                    startAddingPower();
+                }
                 if (pipeCount % 10 == 0 && pipeCount != 0) {
                     pipeSourceDown = pipeRed;
                     pipeSourceUp = pipeRedUp;
@@ -351,18 +358,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        execPower = new Runnable() {
-            @Override
-            public void run() {
-                SuperPowerObject object = new SuperPowerObject(context, getRandomSuperPower());
-                object.setLayoutParams(powerParams);
-                runOnUiThread(() -> {
-                    GameUtils.PipeNPower.addPower(object, layoutParent, powerList);
-                    startObjectAnimation(object);
-                });
-
-                addPowerHandler.postDelayed(this, DEFAULT_POWER_GENERATION);
-            }
+        execPower = () -> {
+            SuperPowerObject object = new SuperPowerObject(context, getRandomSuperPower());
+            object.setLayoutParams(powerParams);
+            runOnUiThread(() -> {
+                GameUtils.PipeNPower.addPower(object, layoutParent, powerList);
+                startObjectAnimation(object);
+            });
         };
 
         onPowerExhaust = () -> mainBird.startAnimation(animBirdBlinkStart);
@@ -373,6 +375,13 @@ public class MainActivity extends AppCompatActivity {
             imgCart.startAnimation(animTouchCart);
         });
 
+        imgSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleSetting();
+                imgSetting.startAnimation(animTouchSetting);
+            }
+        });
         imgShopBluePot.setOnClickListener(v -> {
             imgShopBluePot.startAnimation(animTouchBlue);
             if (mainBird.coin >= 1) {
@@ -456,6 +465,41 @@ public class MainActivity extends AppCompatActivity {
                 imgCoin.startAnimation(animErrorCoin);
             }
         });
+
+        btnSoundMain.setOnClickListener(v -> {
+            if (soundOn) {
+                soundOn = false;
+                btnSoundMain.setImageResource(R.drawable.sound_off);
+                btnSound.setImageResource(R.drawable.sound_off);
+            } else {
+                soundOn = true;
+                btnSoundMain.setImageResource(R.drawable.sound_on);
+                btnSound.setImageResource(R.drawable.sound_on);
+            }
+            editor.putBoolean("soundOn", soundOn);
+            editor.commit();
+
+        });
+        btnMusicMain.setOnClickListener(v -> {
+            if (musicOn) {
+                musicOn = false;
+                if (backgrMusic != null) {
+                    backgrMusic.pause();
+                }
+                btnMusicMain.setImageResource(R.drawable.music_off);
+                btnMusic.setImageResource(R.drawable.music_off);
+            } else {
+                musicOn = true;
+                if (backgrMusic == null) {
+                    backgrMusic = MediaPlayer.create(this, R.raw.background);
+                }
+                backgrMusic.start();
+                btnMusicMain.setImageResource(R.drawable.music_on);
+                btnMusic.setImageResource(R.drawable.music_on);
+            }
+            editor.putBoolean("musicOn", musicOn);
+            editor.commit();
+        });
         imgBaseNight.setOnClickListener(v -> layoutParent.performClick());
         // service
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -478,9 +522,11 @@ public class MainActivity extends AppCompatActivity {
         musicOn = sharedPreferences.getBoolean("musicOn", true);
         if (!soundOn) {
             btnSound.setImageResource(R.drawable.sound_off);
+            btnSoundMain.setImageResource(R.drawable.sound_off);
         }
         if (!musicOn) {
             btnMusic.setImageResource(R.drawable.music_off);
+            btnMusicMain.setImageResource(R.drawable.music_off);
         }
     }
 
@@ -493,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     *  initialize animation
+     * initialize animation
      */
     private void initAnimation() {
         animBirdGoingUp = ObjectAnimator.ofFloat(mainBird, "translationY", mainBird.getY(), mainBird.getY() - screenHeight / 8.5f);
@@ -548,6 +594,7 @@ public class MainActivity extends AppCompatActivity {
         animPowerUp = AnimationUtils.loadAnimation(this, R.anim.anim_power_up);
         animMovingBase = AnimationUtils.loadAnimation(this, R.anim.anim_moving_base);
         animTouchCart = AnimationUtils.loadAnimation(this, R.anim.anim_touch);
+        animTouchSetting = AnimationUtils.loadAnimation(this, R.anim.anim_touch);
         animErrorCoin = AnimationUtils.loadAnimation(this, R.anim.anim_coin);
         animTouchRed = AnimationUtils.loadAnimation(this, R.anim.anim_touch);
         animTouchBlue = AnimationUtils.loadAnimation(this, R.anim.anim_touch);
@@ -607,10 +654,6 @@ public class MainActivity extends AppCompatActivity {
             public void onAnimationEnd(Animation animation) {
                 mainBird.setSuperPower(SuperPower.NONE);
                 mainBird.setAlpha(1f);
-                if (mainBird.getStatus().equals(BirdObject.PLAYING)) {
-                    addPowerHandler.postDelayed(execPower, DEFAULT_POWER_GENERATION);
-                }
-
             }
 
             @Override
@@ -756,13 +799,18 @@ public class MainActivity extends AppCompatActivity {
     /**
      * add score when passed a pipe
      * and add coin when pass a red pipe
+     *
      * @param pipeUp the pipe to check
      */
     private void handleScoreEvent(PipeObject pipeUp) {
         if (!pipeUp.isScored && mainBird.getX() >= pipeUp.getX()) {
             pipeUp.isScored = true;
             if (pipeUp.getPipeBitmap().sameAs(pipeRedUp) && !mainBird.hasTakenCoin) {
-                mainBird.coin++;
+                if (mainBird.getSuperPower().equals(SuperPower.GOLDEN)) {
+                    mainBird.coin += 2;
+                } else {
+                    mainBird.coin++;
+                }
                 imgCoin.startAnimation(animErrorCoin);
                 setGameCoin();
                 coinColor(Color.YELLOW);
@@ -814,7 +862,7 @@ public class MainActivity extends AppCompatActivity {
      * setting the waiting screen and others related component
      */
     private void setToWaitingStatus() {
-        new Handler().postDelayed(() -> animObserver.addUpdateListener(updateListener), 200);
+        normalHandler.postDelayed(() -> animObserver.addUpdateListener(updateListener), 200);
         animObserver.start();
         mainBird.setImageBitmap(null);
         mainBird.setRotation(0);
@@ -833,19 +881,42 @@ public class MainActivity extends AppCompatActivity {
         clearRemainingObject();
 
         pipeCount = 0;
+        pipeCountForPower = 0;
     }
 
     /**
      * toggle shop visibility
      */
     private void toggleShop() {
-        if (shoppingPlace.getVisibility() == View.INVISIBLE) {
+        if (settingPlace.getVisibility() == View.VISIBLE) {
+            settingPlace.setAlpha(1);
+            settingPlace.animate().alpha(0).setDuration(200).withEndAction(() -> settingPlace.setVisibility(View.GONE)).start();
+        }
+        if (shoppingPlace.getVisibility() == View.GONE) {
             shoppingPlace.setVisibility(View.VISIBLE);
             shoppingPlace.setAlpha(0);
-            shoppingPlace.animate().alpha(1).setDuration(300).start();
+            shoppingPlace.animate().alpha(1).setDuration(200).start();
         } else {
             shoppingPlace.setAlpha(1);
-            shoppingPlace.animate().alpha(0).setDuration(300).withEndAction(() -> shoppingPlace.setVisibility(View.INVISIBLE)).start();
+            shoppingPlace.animate().alpha(0).setDuration(200).withEndAction(() -> shoppingPlace.setVisibility(View.GONE)).start();
+        }
+    }
+
+    /**
+     * toggle setting visibility
+     */
+    private void toggleSetting() {
+        if (shoppingPlace.getVisibility() == View.VISIBLE) {
+            shoppingPlace.setAlpha(1);
+            shoppingPlace.animate().alpha(0).setDuration(200).withEndAction(() -> shoppingPlace.setVisibility(View.GONE)).start();
+        }
+        if (settingPlace.getVisibility() == View.GONE) {
+            settingPlace.setVisibility(View.VISIBLE);
+            settingPlace.setAlpha(0);
+            settingPlace.animate().alpha(1).setDuration(200).start();
+        } else {
+            settingPlace.setAlpha(1);
+            settingPlace.animate().alpha(0).setDuration(200).withEndAction(() -> settingPlace.setVisibility(View.GONE)).start();
         }
     }
 
@@ -869,7 +940,8 @@ public class MainActivity extends AppCompatActivity {
      * hide waiting screen
      */
     private void hideWaitingScreen() {
-        shoppingPlace.setVisibility(View.INVISIBLE);
+        shoppingPlace.setVisibility(View.GONE);
+        settingPlace.setVisibility(View.GONE);
         waitingScreen.setVisibility(View.GONE);
         showGamePanel();
         setGameScore(0);
@@ -892,17 +964,13 @@ public class MainActivity extends AppCompatActivity {
     /**
      * adding object continuously (power and pipe)
      */
-    private void startAddingObject() {
-        startAddingPipe();
-        startAddingPower();
-    }
 
     private void startAddingPipe() {
         addPipeHandler.post(execPipe);
     }
 
     private void startAddingPower() {
-        new Handler().postDelayed(() -> addPowerHandler.postDelayed(execPower, DEFAULT_POWER_GENERATION), DEFAULT_PIPE_GENERATION / 2);
+        addPowerHandler.postDelayed(execPower, 1300);
     }
 
     /**
@@ -915,6 +983,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * speed up pipe's generation and pipe's speed
+     *
      * @param by how many time?
      */
     private void gameSpeedUp(float by) {
@@ -939,7 +1008,6 @@ public class MainActivity extends AppCompatActivity {
                 backgrMusic.start();
             }
             addPipeHandler.postDelayed(execPipe, pipeGenSpeed);
-            addPowerHandler.postDelayed(execPower, DEFAULT_POWER_GENERATION);
             resumeObjectAnimation();
             mainBird.setStatus(BirdObject.WAITING);
             btnPause.setEnabled(true);
@@ -958,6 +1026,7 @@ public class MainActivity extends AppCompatActivity {
                     backgrMusic.pause();
                 }
                 btnMusic.setImageResource(R.drawable.music_off);
+                btnMusicMain.setImageResource(R.drawable.music_off);
             } else {
                 musicOn = true;
                 if (backgrMusic == null) {
@@ -965,6 +1034,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 backgrMusic.start();
                 btnMusic.setImageResource(R.drawable.music_on);
+                btnMusicMain.setImageResource(R.drawable.music_on);
             }
             editor.putBoolean("musicOn", musicOn);
             editor.commit();
@@ -973,9 +1043,11 @@ public class MainActivity extends AppCompatActivity {
             if (soundOn) {
                 soundOn = false;
                 btnSound.setImageResource(R.drawable.sound_off);
+                btnSoundMain.setImageResource(R.drawable.sound_off);
             } else {
                 soundOn = true;
                 btnSound.setImageResource(R.drawable.sound_on);
+                btnSoundMain.setImageResource(R.drawable.sound_on);
             }
             editor.putBoolean("soundOn", soundOn);
             editor.commit();
@@ -987,6 +1059,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pauseGameManually() {
+        mainBird.setStatus(BirdObject.PAUSE);
         imgBaseNight.clearAnimation();
         imgBaseDay.clearAnimation();
         if (musicOn && backgrMusic != null) {
@@ -996,16 +1069,13 @@ public class MainActivity extends AppCompatActivity {
         animBirdGoingDown.cancel();
         animBirdGoingUp.cancel();
         clearObjectAnimation();
-        mainBird.setStatus(BirdObject.PAUSE);
         btnPause.setEnabled(false);
-
         showPauseScreen();
         mainBird.animate().cancel();
         mainBird.clearAnimation();
         animBirdBlinkStart.cancel();
         animBirdBlinkEnd.cancel();
         addPipeHandler.removeCallbacks(execPipe);
-        addPowerHandler.removeCallbacks(execPower);
     }
 
     /**
@@ -1044,8 +1114,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putInt("highScore", highScore);
         editor.commit();
         addPipeHandler.removeCallbacks(execPipe);
-        addPowerHandler.removeCallbacks(execPower);
-
         btnPause.setEnabled(false);
         animBirdBlinkStart.cancel();
         animBirdBlinkEnd.cancel();
@@ -1124,6 +1192,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * set effect to the coin text whenever an event happen
+     *
      * @param toColor color to change to
      */
     private void coinColor(int toColor) {
@@ -1199,6 +1268,13 @@ public class MainActivity extends AppCompatActivity {
                 .start();
     }
 
+    private void countPipe() {
+        pipeCount++;
+        if (mainBird.getSuperPower().equals(SuperPower.NONE)) {
+            pipeCountForPower++;
+        }
+    }
+
     /**
      * change the remaining pipe regard to the corresponding power
      */
@@ -1253,31 +1329,29 @@ public class MainActivity extends AppCompatActivity {
      */
     private void resumePipeAnimation() {
         if (pipeList.size() > 0) {
-            normalHandler.postDelayed(() -> runOnUiThread(() -> {
-                for (int i = 0; i < pipeList.size(); i++) {
-                    PipeObject[] pipePair = pipeList.get(i);
-                    PipeObject pipeUp = pipePair[0];
-                    PipeObject pipeDown = pipePair[1];
-                    long dur = pipeSpeed - (int) getCurrentTime(pipeUp.getX());
-                    pipeUp.animate().translationX(-(pipeWidth))
-                            .setInterpolator(new LinearInterpolator())
-                            .setDuration(dur < 0 ? pipeSpeed : dur).start();
-                    pipeDown.animate().translationX(-(pipeWidth))
-                            .setInterpolator(new LinearInterpolator())
-                            .setDuration(dur < 0 ? pipeSpeed : dur)
-                            .withEndAction(() -> {
-                                PipeObject[] pipePair1 = pipeList.poll();
-                                assert pipePair1 != null;
-                                pipePair1[0].animate().cancel();
-                                pipePair1[1].animate().cancel();
-                                layoutParent.removeView(pipePair1[0]);
-                                layoutParent.removeView(pipePair1[1]);
-                                pipePair1[0] = null;
-                                pipePair1[1] = null;
-                            })
-                            .start();
-                }
-            }), 0);
+            for (int i = 0; i < pipeList.size(); i++) {
+                PipeObject[] pipePair = pipeList.get(i);
+                PipeObject pipeUp = pipePair[0];
+                PipeObject pipeDown = pipePair[1];
+                long dur = getTimeToGo(pipeUp.getX());
+                pipeUp.animate().translationX(-(pipeWidth))
+                        .setInterpolator(linearInterpolator)
+                        .setDuration(dur).start();
+                pipeDown.animate().translationX(-(pipeWidth))
+                        .setInterpolator(linearInterpolator)
+                        .setDuration(dur)
+                        .withEndAction(() -> {
+                            PipeObject[] pipePair1 = pipeList.poll();
+                            assert pipePair1 != null;
+                            pipePair1[0].animate().cancel();
+                            pipePair1[1].animate().cancel();
+                            layoutParent.removeView(pipePair1[0]);
+                            layoutParent.removeView(pipePair1[1]);
+                            pipePair1[0] = null;
+                            pipePair1[1] = null;
+                        })
+                        .start();
+            }
         }
     }
 
@@ -1289,10 +1363,10 @@ public class MainActivity extends AppCompatActivity {
         if (powerList.size() > 0) {
             for (int i = 0; i < powerList.size(); i++) {
                 SuperPowerObject object = powerList.get(i);
-                long dur = powerSpeed - (int) getCurrentTime(object.getX());
+                long dur = powerSpeed - (int) getTimeToGo(object.getX());
                 object.animate().translationX(-pipeWidth)
-                        .setInterpolator(new LinearInterpolator())
-                        .setDuration(dur < 0 ? pipeSpeed : dur)
+                        .setInterpolator(linearInterpolator)
+                        .setDuration(dur)
                         .withEndAction(() -> {
                             SuperPowerObject object1 = powerList.poll();
                             assert object1 != null;
@@ -1352,9 +1426,9 @@ public class MainActivity extends AppCompatActivity {
      * @param currentPos current pos of object on-screen
      * @return time to go
      */
-    private float getCurrentTime(float currentPos) {
-        float n = (pipeSpeed / (float) (screenWidth + pipeWidth) * ((screenWidth + pipeWidth) - currentPos));
-        return n >= 0 ? n : 0;
+    private long getTimeToGo(float currentPos) {
+        float n = pipeSpeed - (pipeSpeed / (float)(screenWidth + pipeWidth) * (screenWidth - currentPos));
+        return n > 0 ? (long) n : pipeSpeed;
     }
 
     /**
@@ -1362,7 +1436,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void actionPowerEffect() {
         mainBird.startAnimation(animPowerUp);
-        addPowerHandler.removeCallbacks(execPower);
+
         if (soundOn) {
             powerUp.start();
         }
@@ -1381,12 +1455,12 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * bird receive golden power
-     *
+     * <p>
      * blue 4 point
-     *       purple 7 point
-     *       red 7 point
-     *       golden 10 point
-     *       yellow 13 point
+     * purple 7 point
+     * red 7 point
+     * golden 10 point
+     * yellow 13 point
      */
     private void turnGolden() {
         mainBird.setImageSource(goldenBirdSource);
@@ -1433,22 +1507,21 @@ public class MainActivity extends AppCompatActivity {
     /**
      * get a random super power to release
      * the rarity is different between super powers
-     *
+     * <p>
      * rarity chance: Invulnerable > Poison, Giant > Golden > Speed
+     *
      * @return random power
      */
     private SuperPower getRandomSuperPower() {
-        int random = (int) ((Math.random() * 13) + 1);
+        int random = (int) ((Math.random() * 10) + 1);
         if (random == 1) {
             return SuperPower.SPEED;
         } else if (random >= 2 && random <= 3) {
             return SuperPower.GOLDEN;
-        } else if (random >= 4 && random <= 6) {
-            return SuperPower.GIANT;
-        } else if (random >= 7 && random <= 9) {
-            return SuperPower.POISON;
-        } else {
+        } else if (random >= 4 && random <= 7) {
             return SuperPower.INVULNERABLE;
+        } else {
+            return ((int) ((Math.random() * 2) + 1)) == 1 ? SuperPower.GIANT : SuperPower.POISON;
         }
     }
 
@@ -1462,6 +1535,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * remove power from off-screen event or bird's intersection
+     *
      * @param superPowerObject power to remove
      */
     public void actionRemovePower(SuperPowerObject superPowerObject) {
@@ -1473,6 +1547,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * for Giant and Speed super power only
      * rotate the pipe on intersection
+     *
      * @param pipe the pipe to rotate
      */
     public void rotatePipe(PipeObject pipe) {
@@ -1494,7 +1569,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * for Poison super power only
-     *     withdraw the pipe on half-screen passed
+     * withdraw the pipe on half-screen passed
+     *
      * @param pipeU pipe to withdraw
      * @param pipeD pipe to withdraw
      */
