@@ -88,11 +88,9 @@ public class BirdObject extends androidx.appcompat.widget.AppCompatImageView {
         setImageBitmap(birdUp);
     }
 
-/*
     public void stayMid() {
         setImageBitmap(birdMid);
     }
-*/
 
     public void fallDown() {
         setImageBitmap(birdDown);

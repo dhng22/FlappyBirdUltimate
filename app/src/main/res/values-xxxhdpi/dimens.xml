@@ -1,0 +1,28 @@
+<resources>
+	<dimen name="lastNumberMarStart">2.5dp</dimen>
+	<dimen name="lastNumberMarTop">18.7dp</dimen>
+	<dimen name="lastNumberMarEnd">6.2dp</dimen>
+	<dimen name="btnPauseWidth">87.5dp</dimen>
+	<dimen name="btnPauseHeight">43.8dp</dimen>
+	<dimen name="btnPauseMarTop">12.5dp</dimen>
+	<dimen name="btnPauseMarEnd">6.2dp</dimen>
+	<dimen name="imgBoardPadding">12.5dp</dimen>
+	<dimen name="btnControlMarBottom">25dp</dimen>
+	<dimen name="btnControlMarStart">20dp</dimen>
+	<dimen name="btnControlWidth">112.5dp</dimen>
+	<dimen name="btnControlHeight">56.2dp</dimen>
+	<dimen name="btnControlMarEnd">20dp</dimen>
+	<dimen name="imgOverWidth">312.5dp</dimen>
+	<dimen name="imgOverHeight">93.7dp</dimen>
+	<dimen name="imgTempPauseMarTop">12.5dp</dimen>
+	<dimen name="btnRestartWidth">81.2dp</dimen>
+	<dimen name="btnRestartHeight">75dp</dimen>
+	<dimen name="btnRestartMarTop">25dp</dimen>
+	<dimen name="highestNumberMar">6.2dp</dimen>
+	<dimen name="imgMedalWidth">62.5dp</dimen>
+	<dimen name="imgMedalHeight">93.7dp</dimen>
+	<dimen name="mainControlMarBottom">12.5dp</dimen>
+	<dimen name="mainControlMarEnd">6.2dp</dimen>
+	<dimen name="shopItemStart">20dp</dimen>
+	<dimen name="shopItemBottom">10dp</dimen>
+</resources>

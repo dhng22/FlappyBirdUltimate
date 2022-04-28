@@ -38,9 +38,9 @@
             android:id="@+id/lastNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="@dimen/lastNumberMarStart"
+            android:layout_marginTop="@dimen/lastNumberMarTop"
+            android:layout_marginEnd="@dimen/lastNumberMarEnd"
             android:layout_toEndOf="@id/secondNumber"
             android:src="@drawable/zero" />
 
@@ -50,25 +50,25 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginStart="@dimen/lastNumberMarStart"
+            android:layout_marginTop="@dimen/lastNumberMarTop"
             android:src="@drawable/zero" />
 
         <ImageView
             android:id="@+id/firstNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="@dimen/lastNumberMarTop"
             android:layout_toStartOf="@id/secondNumber"
             android:src="@drawable/zero" />
 
         <ImageButton
             android:id="@+id/btn_pause"
-            android:layout_width="70dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/btnPauseWidth"
+            android:layout_height="@dimen/btnPauseHeight"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginTop="@dimen/btnPauseMarTop"
+            android:layout_marginEnd="@dimen/btnPauseMarEnd"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/img_pause" />
@@ -77,9 +77,9 @@
             android:id="@+id/doubleScr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="@dimen/lastNumberMarStart"
+            android:layout_marginTop="@dimen/lastNumberMarTop"
+            android:layout_marginEnd="@dimen/btnPauseMarEnd"
             android:layout_toEndOf="@id/lastNumber"
             android:alpha="0"
             android:src="@drawable/doublescr" />
@@ -96,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:padding="10dp"
+            android:padding="@dimen/imgBoardPadding"
             android:scaleType="fitCenter"
             android:src="@drawable/board" />
         <ImageView
@@ -107,10 +107,10 @@
             android:layout_height="wrap_content" />
         <ImageButton
             android:id="@+id/btn_play"
-            android:layout_marginBottom="20dp"
-            android:layout_marginStart="16dp"
-            android:layout_width="90dp"
-            android:layout_height="45dp"
+            android:layout_marginBottom="@dimen/btnControlMarBottom"
+            android:layout_marginStart="@dimen/btnControlMarStart"
+            android:layout_width="@dimen/btnControlWidth"
+            android:layout_height="@dimen/btnControlHeight"
             android:layout_alignParentBottom="true"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
@@ -118,11 +118,11 @@
 
         <ImageButton
             android:id="@+id/btn_replay"
-            android:layout_width="90dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/btnControlWidth"
+            android:layout_height="@dimen/btnControlHeight"
             android:layout_alignParentBottom="true"
             android:layout_toEndOf="@id/btn_play"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/btnControlMarBottom"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/img_replay" />
@@ -130,22 +130,22 @@
         <ImageButton
             android:layout_toStartOf="@id/btn_Music"
             android:id="@+id/btn_Sound"
-            android:layout_width="90dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/btnControlWidth"
+            android:layout_height="@dimen/btnControlHeight"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/btnControlMarBottom"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/sound_on" />
 
         <ImageButton
             android:id="@+id/btn_Music"
-            android:layout_width="90dp"
-            android:layout_height="45dp"
+            android:layout_width="@dimen/btnControlWidth"
+            android:layout_height="@dimen/btnControlHeight"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="@dimen/btnControlMarBottom"
+            android:layout_marginEnd="@dimen/btnControlMarEnd"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/music_on" />
@@ -162,22 +162,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:padding="10dp"
+            android:padding="@dimen/imgBoardPadding"
             android:src="@drawable/board" />
         <ImageView
             android:id="@+id/temp_over"
-            android:layout_width="250dp"
-            android:layout_height="75dp"
+            android:layout_width="@dimen/imgOverWidth"
+            android:layout_height="@dimen/imgOverHeight"
             android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/imgTempPauseMarTop"
             android:scaleType="fitCenter"
             android:src="@drawable/gameover"
             android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/img_over"
-            android:layout_width="250dp"
-            android:layout_height="75dp"
+            android:layout_width="@dimen/imgOverWidth"
+            android:layout_height="@dimen/imgOverHeight"
             android:layout_above="@id/temp_over"
             android:layout_centerHorizontal="true"
             android:scaleType="fitCenter"
@@ -185,11 +185,11 @@
 
         <ImageButton
             android:id="@+id/btn_restart"
-            android:layout_width="65dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/btnRestartWidth"
+            android:layout_height="@dimen/btnRestartHeight"
             android:layout_below="@id/img_over"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/btnRestartMarTop"
             android:background="@android:color/transparent"
             android:scaleType="fitCenter"
             android:src="@drawable/img_replay" />
@@ -259,17 +259,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="@dimen/lastNumberMarStart"
+            android:layout_marginTop="@dimen/highestNumberMar"
+            android:layout_marginEnd="@dimen/highestNumberMar"
             android:src="@drawable/zero" />
 
         <ImageView
             android:id="@+id/secondHighestNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginStart="@dimen/lastNumberMarStart"
+            android:layout_marginTop="@dimen/highestNumberMar"
             android:layout_toStartOf="@id/lastHighestNumber"
             android:src="@drawable/zero" />
 
@@ -277,25 +277,25 @@
             android:id="@+id/firstHighestNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/highestNumberMar"
             android:layout_toStartOf="@id/secondHighestNumber"
             android:src="@drawable/zero" />
 
         <ImageView
             android:id="@+id/imgMedal"
-            android:layout_width="50dp"
-            android:layout_height="75dp"
+            android:layout_width="@dimen/imgMedalWidth"
+            android:layout_height="@dimen/imgMedalHeight"
             android:layout_below="@id/secondHighestNumber"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginTop="@dimen/highestNumberMar"
+            android:layout_marginEnd="@dimen/highestNumberMar"
             android:scaleType="fitXY"
             android:src="@drawable/medal" />
 
         <ImageView
             android:id="@+id/imgCart"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="@dimen/mainControlMarBottom"
+            android:layout_marginEnd="@dimen/mainControlMarEnd"
             android:layout_above="@id/imgSetting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -304,8 +304,8 @@
 
         <ImageView
             android:id="@+id/imgSetting"
-            android:layout_marginBottom="10dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="@dimen/mainControlMarBottom"
+            android:layout_marginEnd="@dimen/mainControlMarEnd"
             android:layout_alignParentEnd="true"
             android:layout_above="@id/tempBaseCart"
             android:src="@drawable/setting"
@@ -335,8 +335,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:id="@+id/btn_SoundMain"
-                android:layout_width="90dp"
-                android:layout_height="45dp"
+                android:layout_width="@dimen/btnControlWidth"
+                android:layout_height="@dimen/btnControlHeight"
                 android:layout_alignParentBottom="true"
                 android:layout_toStartOf="@id/btn_MusicMain"
                 android:background="@android:color/transparent"
@@ -348,8 +348,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:id="@+id/btn_MusicMain"
-                android:layout_width="90dp"
-                android:layout_height="45dp"
+                android:layout_width="@dimen/btnControlWidth"
+                android:layout_height="@dimen/btnControlHeight"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:background="@android:color/transparent"
@@ -361,7 +361,6 @@
                 android:id="@+id/guideline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintGuide_percent="0.5"
@@ -386,8 +385,8 @@
                     android:id="@+id/shopBluePot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="@dimen/shopItemStart"
+                    android:layout_marginBottom="@dimen/shopItemBottom"
                     android:scaleType="fitCenter"
                     android:src="@drawable/bluepot" />
 
@@ -395,8 +394,8 @@
                     android:id="@+id/shopRedPot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="@dimen/shopItemStart"
+                    android:layout_marginBottom="@dimen/shopItemBottom"
                     android:scaleType="fitCenter"
                     android:src="@drawable/redpot" />
 
@@ -404,8 +403,8 @@
                     android:id="@+id/shopPurplePot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="@dimen/shopItemStart"
+                    android:layout_marginBottom="@dimen/shopItemBottom"
                     android:scaleType="fitCenter"
                     android:src="@drawable/purplepot" />
 
@@ -413,8 +412,8 @@
                     android:id="@+id/shopGoldenPot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="@dimen/shopItemStart"
+                    android:layout_marginBottom="@dimen/shopItemBottom"
                     android:scaleType="fitCenter"
                     android:src="@drawable/goldenpot" />
 
@@ -422,9 +421,9 @@
                     android:id="@+id/shopYellowPot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="@dimen/shopItemStart"
+                    android:layout_marginBottom="@dimen/shopItemBottom"
+                    android:layout_marginEnd="@dimen/shopItemStart"
                     android:scaleType="fitCenter"
                     android:src="@drawable/yellowpot" />
 
@@ -453,8 +452,7 @@
         android:textColor="#FFFFFF"
         android:textSize="32sp"
         android:translationZ="1dp" />
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:translationZ="20dp"
         android:clickable="false"
         android:id="@+id/splashScreen"

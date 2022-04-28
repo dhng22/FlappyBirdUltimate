@@ -1,8 +1,9 @@
 package edu.hanu.flappybird;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -35,8 +36,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.util.HashMap;
 import java.util.LinkedList;
+
 import edu.hanu.flappybird.service.AlarmReminder;
 import edu.hanu.flappybird.model.BirdObject;
 import edu.hanu.flappybird.model.PipeObject;
@@ -58,7 +61,6 @@ public class GameActivity extends AppCompatActivity {
     public static final int DEFAULT_DAY_NIGHT_CYCLE = 60000;
     public static final int DEFAULT_FLAPPING_SPEED = 100;
     public static final int JOB_ID_SEVEN = 7;
-    CardView birdCard;
     BirdObject mainBird;
     Context context;
     ImageButton btnPause, btnPlay, btnReplay, btnRestart, btnSound, btnMusic;
@@ -249,13 +251,11 @@ public class GameActivity extends AppCompatActivity {
 
         // init game's object
         mainBird = new BirdObject(this);
-        birdCard = new CardView(this);
-        birdCard.setLayoutParams(params);
-        birdCard.setBackgroundColor(Color.TRANSPARENT);
+        mainBird.setLayoutParams(params);
+        mainBird.setBackgroundColor(Color.TRANSPARENT);
 
-        layoutParent.addView(birdCard);
         GameUtils.Bird.birdObject = mainBird;
-        GameUtils.Bird.initBirdObject(birdCard, params);
+        GameUtils.Bird.initBirdObject(layoutParent, params);
 
         cloudScreen.setX(screenWidth);
         cloudScreen2.setX(0);
@@ -299,8 +299,9 @@ public class GameActivity extends AppCompatActivity {
             startAddingPipe();
         };
         controlBirdListener = v -> runOnUiThread(() -> {
+
             animBirdGoingDown.cancel();
-            animBirdGoingUp.setFloatValues(birdCard.getY(), birdCard.getY() - screenHeight / 7.75f);
+            animBirdGoingUp.setFloatValues(mainBird.getY(), mainBird.getY() - screenHeight / 7.75f);
             animBirdGoingUp.start();
             birdGoesUp();
             if (soundOn) {
@@ -368,7 +369,11 @@ public class GameActivity extends AppCompatActivity {
             });
         };
 
-        onPowerExhaust = () -> mainBird.startAnimation(animBirdBlinkStart);
+        onPowerExhaust = () -> {
+            if (mainBird.getStatus().equals(BirdObject.PLAYING)) {
+                mainBird.startAnimation(animBirdBlinkStart);
+            }
+        };
 
         // listener
         imgCart.setOnClickListener(v -> {
@@ -540,10 +545,10 @@ public class GameActivity extends AppCompatActivity {
      * initialize animation
      */
     private void initAnimation() {
-        animBirdGoingUp = ObjectAnimator.ofFloat(birdCard, "translationY", birdCard.getY(), birdCard.getY() - screenHeight / 8.5f);
+        animBirdGoingUp = ObjectAnimator.ofFloat(mainBird, "translationY", mainBird.getY(), mainBird.getY() - screenHeight / 8.5f);
         animBirdGoingUp.setDuration(500);
         animBirdGoingUp.setInterpolator(decelerateInterpolator);
-        animBirdGoingDown = ObjectAnimator.ofFloat(birdCard, "translationY", birdCard.getY(), screenHeight);
+        animBirdGoingDown = ObjectAnimator.ofFloat(mainBird, "translationY", mainBird.getY(), screenHeight);
         animBirdGoingDown.setDuration(800);
         animBirdGoingDown.setInterpolator(accelerateInterpolator);
         animBirdGoingUp.addListener(new Animator.AnimatorListener() {
@@ -558,7 +563,7 @@ public class GameActivity extends AppCompatActivity {
                     soundSwoosh.start();
                 }
                 if (mainBird.getStatus().equals(BirdObject.PLAYING)) {
-                    animBirdGoingDown.setFloatValues(birdCard.getY(), screenHeight);
+                    animBirdGoingDown.setFloatValues(mainBird.getY(), screenHeight);
                     animBirdGoingDown.start();
                     birdGoesDown();
                 }
@@ -626,7 +631,9 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mainBird.startAnimation(animBirdBlinkEnd);
+                if (mainBird.getStatus().equals(BirdObject.PLAYING)) {
+                    mainBird.startAnimation(animBirdBlinkEnd);
+                }
             }
 
             @Override
@@ -637,21 +644,25 @@ public class GameActivity extends AppCompatActivity {
         animBirdBlinkEnd.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                imgDoubleSrc.setAlpha(0f);
-                if (mainBird.getSuperPower().equals(SuperPower.SPEED)) {
-                    resetGameSpeed();
+                if (mainBird.getStatus().equals(BirdObject.PLAYING)) {
+                    imgDoubleSrc.setAlpha(0f);
+                    if (mainBird.getSuperPower().equals(SuperPower.SPEED)) {
+                        resetGameSpeed();
+                    }
+                    mainBird.setImageSource(originalSource);
+                    if (mainBird.getSuperPower().equals(SuperPower.POISON) || mainBird.getSuperPower().equals(SuperPower.GOLDEN)) {
+                        resetPipeColor();
+                    }
+                    mainBird.setSuperPower(SuperPower.INVULNERABLE);
                 }
-                mainBird.setImageSource(originalSource);
-                if (mainBird.getSuperPower().equals(SuperPower.POISON) || mainBird.getSuperPower().equals(SuperPower.GOLDEN)) {
-                    resetPipeColor();
-                }
-                mainBird.setSuperPower(SuperPower.INVULNERABLE);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mainBird.setSuperPower(SuperPower.NONE);
-                mainBird.setAlpha(1f);
+                if (mainBird.getStatus().equals(BirdObject.PLAYING)) {
+                    mainBird.setSuperPower(SuperPower.NONE);
+                    mainBird.setAlpha(1f);
+                }
             }
 
             @Override
@@ -659,7 +670,7 @@ public class GameActivity extends AppCompatActivity {
 
             }
         });
-        animBirdIdling = ObjectAnimator.ofFloat(birdCard, "translationY", screenHeight / 2f, screenHeight / 2f + 60)
+        animBirdIdling = ObjectAnimator.ofFloat(mainBird, "translationY", screenHeight / 2f, screenHeight / 2f + 60)
                 .setDuration(500);
         animBirdIdling.setRepeatCount(ValueAnimator.INFINITE);
         animBirdIdling.setRepeatMode(ValueAnimator.REVERSE);
@@ -735,7 +746,7 @@ public class GameActivity extends AppCompatActivity {
                         actionRemovePower(superPowerObject);
                     }
                     superPowerObject.getHitRect(powerRect);
-                    birdCard.getHitRect(birdRect);
+                    mainBird.getHitRect(birdRect);
                     // set power to the bird and remove power from screen
                     if (birdRect.intersect(powerRect)) {
                         mainBird.setSuperPower(superPowerObject.getSuperPower());
@@ -762,14 +773,14 @@ public class GameActivity extends AppCompatActivity {
                 PipeObject pipeUp = pipePair[0];
                 PipeObject pipeDown = pipePair[1];
                 // check bird collision with pipe
-                if (pipeUp.getX() <= screenWidth / 2f && pipeUp.getX() >= pipeWidth - (pipeWidth/1.5)) {
+                if (pipeUp.getX() <= screenWidth / 2f && pipeUp.getX() >= pipeWidth - (pipeWidth / 1.5)) {
 
                     //check if the bird pass through pipe and has taken the score
                     handleScoreEvent(pipeUp);
                     if (mainBird.getSuperPower().equals(SuperPower.POISON)) {
                         withDrawPipe(pipeUp, pipeDown);
                     }
-                    birdCard.getHitRect(birdRect);
+                    mainBird.getHitRect(birdRect);
                     pipeUp.getHitRect(pipeUpRect);
                     pipeDown.getHitRect(pipeDownRect);
                     //if intersect, check if bird has super power
@@ -805,7 +816,7 @@ public class GameActivity extends AppCompatActivity {
      * @param pipeUp the pipe to check
      */
     private void handleScoreEvent(PipeObject pipeUp) {
-        if (!pipeUp.isScored && birdCard.getX() >= pipeUp.getX()) {
+        if (!pipeUp.isScored && mainBird.getX() >= pipeUp.getX()) {
             pipeUp.isScored = true;
             if (pipeUp.getPipeBitmap().sameAs(pipeRedUp) && !mainBird.hasTakenCoin) {
                 if (mainBird.getSuperPower().equals(SuperPower.GOLDEN)) {
@@ -837,9 +848,9 @@ public class GameActivity extends AppCompatActivity {
      * handle bird intersection with floor and ceil
      */
     private void handleFloorEvent() {
-        if (birdCard.getY() >= maxY || birdCard.getY() <= minY) {
-            birdCard.getHitRect(birdRect);
-            if (birdRect.intersect(baseRect) || birdCard.getY() <= 0) {
+        if (mainBird.getY() >= screenHeight / 2f || mainBird.getY() <= minY) {
+            mainBird.getHitRect(birdRect);
+            if (birdRect.intersect(baseRect) || mainBird.getY() <= 0) {
                 mainBird.setStatus(BirdObject.DEAD);
                 setToDeadStatus();
                 if (soundOn) {
@@ -869,7 +880,7 @@ public class GameActivity extends AppCompatActivity {
         animObserver.start();
         mainBird.setAlpha(1f);
         mainBird.setImageBitmap(null);
-        birdCard.setRotation(0);
+        mainBird.setRotation(0);
         mainBird.setBackground(animFlappingBird);
         animFlappingBird.setVisible(true, true);
         animFlappingBird.start();
@@ -1074,8 +1085,8 @@ public class GameActivity extends AppCompatActivity {
         clearObjectAnimation();
         btnPause.setEnabled(false);
         showPauseScreen();
-        birdCard.animate().cancel();
-        birdCard.clearAnimation();
+        mainBird.animate().cancel();
+        mainBird.clearAnimation();
         animBirdBlinkStart.cancel();
         animBirdBlinkEnd.cancel();
         addPipeHandler.removeCallbacks(execPipe);
@@ -1088,11 +1099,12 @@ public class GameActivity extends AppCompatActivity {
      */
     private void setToDeadStatus() {
         mainBird.setStatus(BirdObject.DEAD);
+        clearObjectAnimation();
         animObserver.removeUpdateListener(updateListener);
         animObserver.cancel();
         layoutParent.setOnClickListener(null);
-        birdCard.setAlpha(1f);
-        birdCard.animate().cancel();
+        mainBird.setAlpha(1f);
+        mainBird.animate().cancel();
         animBirdGoingUp.cancel();
         animBirdGoingDown.cancel();
         imgDoubleSrc.setAlpha(0f);
@@ -1101,7 +1113,6 @@ public class GameActivity extends AppCompatActivity {
         if (musicOn && backgrMusic != null) {
             backgrMusic.pause();
         }
-        powerExecHandler.removeCallbacks(onPowerExhaust);
         imgDoubleSrc.setAlpha(0f);
         if (mainBird.getSuperPower().equals(SuperPower.SPEED)) {
             resetGameSpeed();
@@ -1112,7 +1123,6 @@ public class GameActivity extends AppCompatActivity {
         }
         movingCloud.cancel();
         movingCloud2.cancel();
-        clearObjectAnimation();
         int highScore = Math.max(sharedPreferences.getInt("highScore", 0), mainBird.score);
         editor.putInt("highScore", highScore);
         editor.commit();
@@ -1126,7 +1136,7 @@ public class GameActivity extends AppCompatActivity {
         }
         resetGameSpeed();
         mainBird.setSuperPower(SuperPower.NONE);
-        birdCard.clearAnimation();
+        mainBird.clearAnimation();
         mainBird.setImageSource(originalSource);
 
         mainBird.score = 0;
@@ -1155,22 +1165,24 @@ public class GameActivity extends AppCompatActivity {
      * fall down animation when bird falling
      */
     private void birdIdlingAnimationExec() {
-        birdCard.setX(screenWidth / 7f);
-        birdCard.setY(screenHeight / 2f);
-        birdCard.setRotation(0);
+        mainBird.setX(screenWidth / 7f);
+        mainBird.setY(screenHeight / 2f);
+        mainBird.setRotation(0);
         animBirdIdling.start();
     }
 
     private void birdGoesUp() {
-        birdCard.animate().cancel();
-        mainBird.flyUp();
-        birdCard.animate().rotation(-20f).setDuration(300).start();
+        mainBird.animate().cancel();
+        mainBird.stayMid();
+        normalHandler.postDelayed(() -> runOnUiThread(() -> mainBird.flyUp()), 100);
+        mainBird.animate().rotation(-20f).setDuration(300).start();
     }
 
     private void birdGoesDown() {
-        birdCard.animate().cancel();
-        mainBird.fallDown();
-        birdCard.animate().rotation(60f).setDuration(800).start();
+        mainBird.animate().cancel();
+        mainBird.stayMid();
+        normalHandler.postDelayed(() -> runOnUiThread(() -> mainBird.fallDown()), 100);
+        mainBird.animate().rotation(60f).setDuration(800).start();
     }
 
     /**
@@ -1434,7 +1446,7 @@ public class GameActivity extends AppCompatActivity {
      * @return time to go
      */
     private long getTimeToGo(float currentPos) {
-        float n = pipeSpeed - (pipeSpeed / (float)(screenWidth + pipeWidth) * (screenWidth - currentPos));
+        float n = pipeSpeed - (pipeSpeed / (float) (screenWidth + pipeWidth) * (screenWidth - currentPos));
         return n > 0 ? (long) n : pipeSpeed;
     }
 
