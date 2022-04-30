@@ -864,7 +864,6 @@ public class GameActivity extends AppCompatActivity {
      * reset every thing to the waiting screen state
      */
     private void onGameRestart() {
-        mainBird.setStatus(BirdObject.WAITING);
         btnPause.setEnabled(true);
         layoutParent.setOnClickListener(waitingScreenListener);
         hidePauseScreen();
@@ -874,10 +873,18 @@ public class GameActivity extends AppCompatActivity {
     /**
      * setting the waiting screen and others related component
      */
-    private void setToWaitingStatus() {
+    public void setToWaitingStatus() {
+        if (mainBird.getSuperPower().equals(SuperPower.SPEED)) {
+            resetGameSpeed();
+        }
+        if (mainBird.getSuperPower().equals(SuperPower.POISON) || mainBird.getSuperPower().equals(SuperPower.GOLDEN)) {
+            resetPipeColor();
+        }
         mainBird.setStatus(BirdObject.WAITING);
         normalHandler.postDelayed(() -> animObserver.addUpdateListener(updateListener), 200);
         animObserver.start();
+        mainBird.setImageSource(originalSource);
+        mainBird.setSuperPower(SuperPower.NONE);
         mainBird.setAlpha(1f);
         mainBird.setImageBitmap(null);
         mainBird.setRotation(0);
@@ -1097,47 +1104,25 @@ public class GameActivity extends AppCompatActivity {
      * show death screen
      * store high score
      */
-    private void setToDeadStatus() {
+    public void setToDeadStatus() {
         mainBird.setStatus(BirdObject.DEAD);
         clearObjectAnimation();
-        animObserver.removeUpdateListener(updateListener);
-        animObserver.cancel();
         layoutParent.setOnClickListener(null);
-        mainBird.setAlpha(1f);
-        mainBird.animate().cancel();
-        animBirdGoingUp.cancel();
-        animBirdGoingDown.cancel();
-        imgDoubleSrc.setAlpha(0f);
-        imgBaseNight.clearAnimation();
-        imgBaseDay.clearAnimation();
+        addPipeHandler.removeCallbacks(execPipe);
+        powerExecHandler.removeCallbacks(onPowerExhaust);
         if (musicOn && backgrMusic != null) {
             backgrMusic.pause();
         }
-        imgDoubleSrc.setAlpha(0f);
-        if (mainBird.getSuperPower().equals(SuperPower.SPEED)) {
-            resetGameSpeed();
-        }
-        mainBird.setImageSource(originalSource);
-        if (mainBird.getSuperPower().equals(SuperPower.POISON) || mainBird.getSuperPower().equals(SuperPower.GOLDEN)) {
-            resetPipeColor();
-        }
-        movingCloud.cancel();
-        movingCloud2.cancel();
-        int highScore = Math.max(sharedPreferences.getInt("highScore", 0), mainBird.score);
-        editor.putInt("highScore", highScore);
-        editor.commit();
-        addPipeHandler.removeCallbacks(execPipe);
-        btnPause.setEnabled(false);
-        animBirdBlinkStart.cancel();
-        animBirdBlinkEnd.cancel();
-        showDeathScreen();
         if (soundOn) {
             soundDead.start();
         }
-        resetGameSpeed();
-        mainBird.setSuperPower(SuperPower.NONE);
-        mainBird.clearAnimation();
-        mainBird.setImageSource(originalSource);
+
+        int highScore = Math.max(sharedPreferences.getInt("highScore", 0), mainBird.score);
+        editor.putInt("highScore", highScore);
+        editor.commit();
+
+        btnPause.setEnabled(false);
+        showDeathScreen();
 
         mainBird.score = 0;
     }
@@ -1167,7 +1152,6 @@ public class GameActivity extends AppCompatActivity {
     private void birdIdlingAnimationExec() {
         mainBird.setX(screenWidth / 7f);
         mainBird.setY(screenHeight / 2f);
-        mainBird.setRotation(0);
         animBirdIdling.start();
     }
 
@@ -1402,6 +1386,21 @@ public class GameActivity extends AppCompatActivity {
      */
     private void clearObjectAnimation() {
         GameUtils.PipeNPower.clearAnimation(pipeList, powerList);
+
+        animObserver.removeUpdateListener(updateListener);
+        animObserver.cancel();
+        mainBird.setAlpha(1f);
+        mainBird.animate().cancel();
+        mainBird.clearAnimation();
+        animBirdGoingUp.cancel();
+        animBirdGoingDown.cancel();
+        imgDoubleSrc.setAlpha(0f);
+        imgBaseNight.clearAnimation();
+        imgBaseDay.clearAnimation();
+        movingCloud.cancel();
+        movingCloud2.cancel();
+        animBirdBlinkStart.cancel();
+        animBirdBlinkEnd.cancel();
     }
 
     /**
@@ -1435,7 +1434,8 @@ public class GameActivity extends AppCompatActivity {
             editor.commit();
             Intent intent = new Intent(this, AlarmReminder.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, JOB_ID_SEVEN, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT);
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + DateUtils.getTimeToGo(), pendingIntent);
+            long timeToGo = DateUtils.getTimeToGo();
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timeToGo, pendingIntent);
         }
     }
 

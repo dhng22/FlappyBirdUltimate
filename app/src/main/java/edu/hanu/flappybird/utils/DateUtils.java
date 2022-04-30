@@ -28,7 +28,7 @@ public class DateUtils {
                     calendar.getMinimum(Calendar.DAY_OF_MONTH) : currentDayOfMonth + 1;
 
             calendar2.set(Calendar.HOUR_OF_DAY, 7);
-            calendar2.set(Calendar.MINUTE, 0);
+            calendar2.set(Calendar.MINUTE, 1);
             calendar2.set(nextYear, nextMonth, nextDay);
 
             timeToSchedule = calendar2.getTimeInMillis() - calendar.getTimeInMillis();
@@ -37,7 +37,7 @@ public class DateUtils {
             calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY));
             calendar.set(currentYear, currentMonth, currentDayOfMonth);
             calendar2.set(Calendar.HOUR_OF_DAY, 7);
-            calendar2.set(Calendar.MINUTE, 0);
+            calendar2.set(Calendar.MINUTE, 1);
             calendar2.set(currentYear, currentMonth, currentDayOfMonth);
             timeToSchedule = calendar2.getTimeInMillis() - calendar.getTimeInMillis();
         }
