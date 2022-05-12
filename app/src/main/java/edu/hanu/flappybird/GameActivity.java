@@ -767,7 +767,7 @@ public class GameActivity extends AppCompatActivity {
                 PipeObject[] pipePair;
                 try {
                     pipePair = pipeList.get(i);
-                } catch (ArrayIndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     pipePair = pipeList.get(i - 1);
                 }
                 PipeObject pipeUp = pipePair[0];
@@ -1106,10 +1106,10 @@ public class GameActivity extends AppCompatActivity {
      */
     public void setToDeadStatus() {
         mainBird.setStatus(BirdObject.DEAD);
-        clearObjectAnimation();
-        layoutParent.setOnClickListener(null);
         addPipeHandler.removeCallbacks(execPipe);
         powerExecHandler.removeCallbacks(onPowerExhaust);
+        clearObjectAnimation();
+        layoutParent.setOnClickListener(null);
         if (musicOn && backgrMusic != null) {
             backgrMusic.pause();
         }
@@ -1289,7 +1289,12 @@ public class GameActivity extends AppCompatActivity {
         }
         if (pipeList.size() > 0) {
             for (int i = 0; i < pipeList.size(); i++) {
-                PipeObject[] pipePair = pipeList.get(i);
+                PipeObject[] pipePair;
+                try {
+                    pipePair = pipeList.get(i);
+                } catch (IndexOutOfBoundsException e) {
+                    pipePair = pipeList.get(i - 1);
+                }
                 PipeObject pipeUp = pipePair[0];
                 PipeObject pipeDown = pipePair[1];
                 pipeUp.setImageBitmap(pipeSourceUp);
