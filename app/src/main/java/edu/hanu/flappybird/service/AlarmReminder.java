@@ -20,7 +20,7 @@ public class AlarmReminder extends BroadcastReceiver {
 
         componentName = new ComponentName(context, ReminderScheduler.class);
         jobInfo = new JobInfo.Builder(GameActivity.JOB_ID_SEVEN, componentName)
-                .setPeriodic(24 * 60 * 60 * 1000)
+                .setPeriodic(86400000)
                 .build();
 
         scheduler.schedule(jobInfo);

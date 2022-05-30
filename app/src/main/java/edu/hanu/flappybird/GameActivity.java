@@ -61,10 +61,10 @@ public class GameActivity extends AppCompatActivity {
     public static final int DEFAULT_DAY_NIGHT_CYCLE = 60000;
     public static final int DEFAULT_FLAPPING_SPEED = 100;
     public static final int JOB_ID_SEVEN = 7;
-    BirdObject mainBird;
+    BirdObject mainBird, tempBird;
     Context context;
     ImageButton btnPause, btnPlay, btnReplay, btnRestart, btnSound, btnMusic;
-    RelativeLayout layoutParent, waitingScreen, pauseScreen, deathScreen, gameControlPanel;
+    RelativeLayout layoutParent, layoutObject, waitingScreen, pauseScreen, deathScreen, gameControlPanel;
     ImageView imgMessage, imgLastHighestNumber, imgSecondHighestNumber, imgFirstHighestNumber, imgDoubleSrc,
             imgLastNumber, imgSecondNumber, imgFirstNumber, imgBase, imgCoin, imgBaseNight, imgBaseDay, backgroundNight, cloudScreen, cloudScreen2,
             imgCart, imgSetting, imgShopBluePot, imgShopRedPot, imgShopPurplePot, imgShopGoldenPot, imgShopYellowPot, btnSoundMain, btnMusicMain;
@@ -94,7 +94,7 @@ public class GameActivity extends AppCompatActivity {
     AccelerateInterpolator accelerateInterpolator;
     AnimationDrawable animFlappingBird, animFlippingCoin;
     AlarmManager alarmManager;
-    Rect powerRect, pipeUpRect, pipeDownRect, birdRect, baseRect;
+    Rect powerRect, pipeUpRect, pipeDownRect, birdRect, tempBirdRect, baseRect;
     HorizontalScrollView shoppingPlace;
     TextView txtCoin;
     ConstraintLayout splashScreen, settingPlace;
@@ -129,6 +129,7 @@ public class GameActivity extends AppCompatActivity {
      */
     private void mapping() {
         layoutParent = findViewById(R.id.layoutParent);
+        layoutObject = findViewById(R.id.layoutObject);
         // executing button
         btnPause = findViewById(R.id.btn_pause);
         btnPlay = findViewById(R.id.btn_play);
@@ -220,6 +221,7 @@ public class GameActivity extends AppCompatActivity {
         pipeUpRect = new Rect();
         pipeDownRect = new Rect();
         birdRect = new Rect();
+        tempBirdRect = new Rect();
         baseRect = new Rect();
 
         // asc variables
@@ -251,11 +253,18 @@ public class GameActivity extends AppCompatActivity {
 
         // init game's object
         mainBird = new BirdObject(this);
-        mainBird.setLayoutParams(params);
+        tempBird = new BirdObject(this);
+
+        tempBird.setLayoutParams(params);
+
         mainBird.setBackgroundColor(Color.TRANSPARENT);
+        tempBird.setBackgroundResource(R.drawable.bluebird_downflap);
 
         GameUtils.Bird.birdObject = mainBird;
-        GameUtils.Bird.initBirdObject(layoutParent, params);
+        GameUtils.Bird.initBirdObject(layoutObject, params);
+        layoutParent.addView(tempBird);
+        tempBird.setAlpha(0f);
+        tempBird.setRotation(90f);
 
         cloudScreen.setX(screenWidth);
         cloudScreen2.setX(0);
@@ -273,7 +282,7 @@ public class GameActivity extends AppCompatActivity {
         // rendering a temporary pipe object to get its view's height
         PipeObject pipeObject = new PipeObject(context, pipeGreen);
         pipeObject.setLayoutParams(params);
-        layoutParent.addView(pipeObject);
+        layoutObject.addView(pipeObject);
         pipeObject.setX(screenWidth);
         pipeObject.setY(0);
         pipeObject.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -283,7 +292,7 @@ public class GameActivity extends AppCompatActivity {
                 pipeHeight = pipeObject.getHeight();
                 pipeWidth = pipeObject.getWidth();
                 GameUtils.PipeNPower.pipeHeight = pipeHeight;
-                layoutParent.removeView(pipeObject);
+                layoutObject.removeView(pipeObject);
             }
         });
 
@@ -352,7 +361,7 @@ public class GameActivity extends AppCompatActivity {
                 pipePair[1] = pipeDown;
                 runOnUiThread(() -> {
                     GameUtils.PipeNPower.addPipe(pipeUp, pipeDown,
-                            layoutParent, pipeList, pipePair);
+                            layoutObject, pipeList, pipePair);
                     startObjectAnimation(pipeUp, pipeDown);
                 });
                 addPipeHandler.postDelayed(this, pipeGenSpeed);
@@ -364,7 +373,7 @@ public class GameActivity extends AppCompatActivity {
             SuperPowerObject object = new SuperPowerObject(context, getRandomSuperPower());
             object.setLayoutParams(powerParams);
             runOnUiThread(() -> {
-                GameUtils.PipeNPower.addPower(object, layoutParent, powerList);
+                GameUtils.PipeNPower.addPower(object, layoutObject, powerList);
                 startObjectAnimation(object);
             });
         };
@@ -649,6 +658,7 @@ public class GameActivity extends AppCompatActivity {
                     if (mainBird.getSuperPower().equals(SuperPower.SPEED)) {
                         resetGameSpeed();
                     }
+                    tempBird.setBackgroundResource(R.drawable.bluebird_midflap);
                     mainBird.setImageSource(originalSource);
                     if (mainBird.getSuperPower().equals(SuperPower.POISON) || mainBird.getSuperPower().equals(SuperPower.GOLDEN)) {
                         resetPipeColor();
@@ -720,6 +730,8 @@ public class GameActivity extends AppCompatActivity {
 
         if (mainBird.getStatus().equals(BirdObject.PAUSE)) {
             mainBird.setStatus(BirdObject.PAUSE);
+            animObserver.addUpdateListener(updateListener);
+            animObserver.start();
             pauseGameManually();
         }
     }
@@ -728,6 +740,8 @@ public class GameActivity extends AppCompatActivity {
      * handling event on observing listener
      */
     private void eventHandling() {
+        tempBird.setY(mainBird.getY());
+        tempBird.setX(mainBird.getX());
         handleFloorEvent();
         handlePipeEvent();
         handlePowerEvent();
@@ -747,8 +761,9 @@ public class GameActivity extends AppCompatActivity {
                     }
                     superPowerObject.getHitRect(powerRect);
                     mainBird.getHitRect(birdRect);
+                    tempBird.getHitRect(tempBirdRect);
                     // set power to the bird and remove power from screen
-                    if (birdRect.intersect(powerRect)) {
+                    if (birdRect.intersect(powerRect)&&tempBirdRect.intersect(powerRect)) {
                         mainBird.setSuperPower(superPowerObject.getSuperPower());
                         actionPowerEffect();
                         actionRemovePower(superPowerObject);
@@ -773,7 +788,7 @@ public class GameActivity extends AppCompatActivity {
                 PipeObject pipeUp = pipePair[0];
                 PipeObject pipeDown = pipePair[1];
                 // check bird collision with pipe
-                if (pipeUp.getX() <= screenWidth / 2f && pipeUp.getX() >= pipeWidth - (pipeWidth / 1.5)) {
+                if (pipeUp.getX() <= screenWidth / 2f) {
 
                     //check if the bird pass through pipe and has taken the score
                     handleScoreEvent(pipeUp);
@@ -781,10 +796,12 @@ public class GameActivity extends AppCompatActivity {
                         withDrawPipe(pipeUp, pipeDown);
                     }
                     mainBird.getHitRect(birdRect);
+                    tempBird.getHitRect(tempBirdRect);
                     pipeUp.getHitRect(pipeUpRect);
                     pipeDown.getHitRect(pipeDownRect);
                     //if intersect, check if bird has super power
-                    if (birdRect.intersect(pipeUpRect) || birdRect.intersect(pipeDownRect)) {
+                    if ((birdRect.intersect(pipeUpRect) && tempBirdRect.intersect(pipeUpRect))
+                            || (birdRect.intersect(pipeDownRect) && tempBirdRect.intersect(pipeDownRect))) {
                         if (!mainBird.getSuperPower().equals(SuperPower.INVULNERABLE)) {
                             if (soundOn) {
                                 soundHit.start();
@@ -796,7 +813,7 @@ public class GameActivity extends AppCompatActivity {
                             //if yes, send broadcast and let main act take care
                         } else if (mainBird.getSuperPower().equals(SuperPower.GIANT)
                                 || mainBird.getSuperPower().equals(SuperPower.SPEED)) {
-                            if (birdRect.intersect(pipeUpRect)) {
+                            if (birdRect.intersect(pipeUpRect) && tempBirdRect.intersect(pipeUpRect)) {
                                 rotatePipe(pipeUp);
                             } else {
                                 rotatePipe(pipeDown);
@@ -850,7 +867,8 @@ public class GameActivity extends AppCompatActivity {
     private void handleFloorEvent() {
         if (mainBird.getY() >= screenHeight / 2f || mainBird.getY() <= minY) {
             mainBird.getHitRect(birdRect);
-            if (birdRect.intersect(baseRect) || mainBird.getY() <= 0) {
+            tempBird.getHitRect(tempBirdRect);
+            if ((birdRect.intersect(baseRect) && tempBirdRect.intersect(baseRect)) || mainBird.getY() <= 0) {
                 mainBird.setStatus(BirdObject.DEAD);
                 setToDeadStatus();
                 if (soundOn) {
@@ -883,6 +901,7 @@ public class GameActivity extends AppCompatActivity {
         mainBird.setStatus(BirdObject.WAITING);
         normalHandler.postDelayed(() -> animObserver.addUpdateListener(updateListener), 200);
         animObserver.start();
+        tempBird.setBackgroundResource(R.drawable.bluebird_midflap);
         mainBird.setImageSource(originalSource);
         mainBird.setSuperPower(SuperPower.NONE);
         mainBird.setAlpha(1f);
@@ -1037,6 +1056,8 @@ public class GameActivity extends AppCompatActivity {
             layoutParent.performClick();
             layoutParent.performClick();
             hidePauseScreen();
+            animObserver.addUpdateListener(updateListener);
+            animObserver.start();
         });
         btnReplay.setOnClickListener(v -> onGameRestart());
 
@@ -1241,8 +1262,8 @@ public class GameActivity extends AppCompatActivity {
                     if (pipePair1 != null) {
                         pipePair1[0].animate().cancel();
                         pipePair1[1].animate().cancel();
-                        layoutParent.removeView(pipePair1[0]);
-                        layoutParent.removeView(pipePair1[1]);
+                        layoutObject.removeView(pipePair1[0]);
+                        layoutObject.removeView(pipePair1[1]);
                         pipePair1[0] = null;
                         pipePair1[1] = null;
                     }
@@ -1263,7 +1284,7 @@ public class GameActivity extends AppCompatActivity {
                     SuperPowerObject superPowerObject1 = powerList.poll();
                     if (superPowerObject1 != null) {
                         superPowerObject1.animate().cancel();
-                        layoutParent.removeView(superPowerObject1);
+                        layoutObject.removeView(superPowerObject1);
                     }
                 })
                 .start();
@@ -1351,8 +1372,8 @@ public class GameActivity extends AppCompatActivity {
                             if (pipePair1 != null) {
                                 pipePair1[0].animate().cancel();
                                 pipePair1[1].animate().cancel();
-                                layoutParent.removeView(pipePair1[0]);
-                                layoutParent.removeView(pipePair1[1]);
+                                layoutObject.removeView(pipePair1[0]);
+                                layoutObject.removeView(pipePair1[1]);
                                 pipePair1[0] = null;
                                 pipePair1[1] = null;
                             }
@@ -1378,7 +1399,7 @@ public class GameActivity extends AppCompatActivity {
                             SuperPowerObject object1 = powerList.poll();
                             if (object1 != null) {
                                 object1.animate().cancel();
-                                layoutParent.removeView(object1);
+                                layoutObject.removeView(object1);
                             }
                         })
                         .start();
@@ -1412,7 +1433,7 @@ public class GameActivity extends AppCompatActivity {
      * clear the remaining object when bird is died
      */
     private void clearRemainingObject() {
-        GameUtils.PipeNPower.clearObject(pipeList, powerList, layoutParent);
+        GameUtils.PipeNPower.clearObject(pipeList, powerList, layoutObject);
     }
 
     @Override
@@ -1440,6 +1461,7 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AlarmReminder.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, JOB_ID_SEVEN, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT);
             long timeToGo = DateUtils.getTimeToGo();
+            Toast.makeText(context, ""+(timeToGo/60/60/1000), Toast.LENGTH_SHORT).show();
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timeToGo, pendingIntent);
         }
     }
@@ -1525,6 +1547,7 @@ public class GameActivity extends AppCompatActivity {
      */
     private void turnGiant() {
         mainBird.setImageSource(giantBirdSource);
+        tempBird.setBackgroundResource(R.drawable.redbird_midflap);
         powerExecHandler.postDelayed(onPowerExhaust, DEFAULT_PIPE_GENERATION * 6);
     }
 
@@ -1564,7 +1587,7 @@ public class GameActivity extends AppCompatActivity {
      */
     public void actionRemovePower(SuperPowerObject superPowerObject) {
         superPowerObject.animate().cancel();
-        layoutParent.removeView(superPowerObject);
+        layoutObject.removeView(superPowerObject);
         powerList.remove(superPowerObject);
     }
 
