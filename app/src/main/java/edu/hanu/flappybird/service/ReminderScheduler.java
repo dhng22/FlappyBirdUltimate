@@ -35,6 +35,6 @@ public class ReminderScheduler extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        return false;
+        return true;
     }
 }

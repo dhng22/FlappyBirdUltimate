@@ -1461,7 +1461,6 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AlarmReminder.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, JOB_ID_SEVEN, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT);
             long timeToGo = DateUtils.getTimeToGo();
-            Toast.makeText(context, ""+(timeToGo/60/60/1000), Toast.LENGTH_SHORT).show();
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + timeToGo, pendingIntent);
         }
     }
